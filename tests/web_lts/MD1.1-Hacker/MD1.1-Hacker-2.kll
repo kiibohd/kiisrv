@@ -1,0 +1,17 @@
+Name = "MD1.1";
+Variant = "hacker";
+Layout = "Hacker";
+Base = "HackerBlank";
+Version = "0.2";
+Author = "HaaTa (Jacob Alexander) 2014";
+KLL = "0.3";
+Date = "2014-09-14";
+Generator = "KIICONF 0.2";
+
+U"W" : flashMode();
+U"A" : ledControl( 3, 15, 0 );
+U"S" : ledControl( 4, 15, 0 );
+U"D" : ledControl( 5, 0, 0);
+
+
+

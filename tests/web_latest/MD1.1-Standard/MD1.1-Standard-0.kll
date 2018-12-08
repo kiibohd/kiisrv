@@ -1,0 +1,82 @@
+Name = "MD1.1";
+Variant = "standard";
+Layout = "Standard";
+Base = "StandardBlank";
+Version = "0.2";
+Author = "HaaTa (Jacob Alexander) 2014";
+KLL = "0.3";
+Date = "2014-09-14";
+Generator = "KIICONF 0.2";
+
+
+
+U"ESC" : U"ESC";
+U"1" : U"1";
+U"2" : U"2";
+U"3" : U"3";
+U"4" : U"4";
+U"5" : U"5";
+U"6" : U"6";
+U"7" : U"7";
+U"8" : U"8";
+U"9" : U"9";
+U"0" : U"0";
+U"MINUS" : U"MINUS";
+U"EQUAL" : U"EQUAL";
+U"BACKSLASH" : U"BACKSLASH";
+U"BACKTICK" : U"BACKTICK";
+U"TAB" : U"TAB";
+U"Q" : U"Q";
+U"W" : U"W";
+U"E" : U"E";
+U"R" : U"R";
+U"T" : U"T";
+U"Y" : U"Y";
+U"U" : U"U";
+U"I" : U"I";
+U"O" : U"O";
+U"P" : U"P";
+U"LBRACE" : U"LBRACE";
+U"RBRACE" : U"RBRACE";
+U"BACKSPACE" : U"BACKSPACE";
+U"CTRL" : U"CTRL";
+U"A" : U"A";
+U"S" : U"S";
+U"D" : U"D";
+U"F" : U"F";
+U"G" : U"G";
+U"H" : U"H";
+U"J" : U"J";
+U"K" : U"K";
+U"L" : U"L";
+U"SEMICOLON" : U"SEMICOLON";
+U"QUOTE" : U"QUOTE";
+U"ENTER" : U"ENTER";
+U"LSHIFT" : U"LSHIFT";
+U"Z" : U"Z";
+U"X" : U"X";
+U"C" : U"C";
+U"V" : U"V";
+U"B" : U"B";
+U"N" : U"N";
+U"M" : U"M";
+U"COMMA" : U"COMMA";
+U"PERIOD" : U"PERIOD";
+U"SLASH" : U"SLASH";
+U"RSHIFT" : U"RSHIFT";
+U"FUNCTION1" : U"FUNCTION1";
+U"FUNCTION2" : U"FUN1";
+U"LALT" : U"LALT";
+U"LGUI" : U"LGUI";
+U"SPACE" : U"SPACE";
+U"RGUI" : U"RGUI";
+U"RALT" : U"RALT";
+U"FUNCTION3" : U"FUN2";
+U"FUNCTION4" : U"FUN1";
+
+
+
+A[all_on] <= start, pfunc:interp;
+A[all_on, 1] <= P[c:0%](255), P[c:100%](255);
+
+

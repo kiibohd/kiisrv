@@ -1,0 +1,17 @@
+Name = "MD1.1";
+Variant = "alphabet";
+Layout = "Alphabet";
+Base = "AlphabetBlank";
+Version = "0.3d";
+Author = "HaaTa (Jacob Alexander) 2014-2016";
+KLL = "0.3c";
+Date = "2016-02-06";
+Generator = "KIICONF 0.2";
+
+U"ESC" : flashMode();
+U"N" : ledControl( 0, 15 );
+U"M" : ledControl( 1, 15 );
+U"COMMA" : ledControl( 3, 0 );
+
+
+

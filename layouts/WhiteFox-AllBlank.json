@@ -1,0 +1,550 @@
+{
+    "header": {
+        "Name": "WhiteFox",
+        "Layout": "AllBlank",
+        "Base": "AllBlank",
+        "Version": "0.2",
+        "Author": "HaaTa (Jacob Alexander) 2015",
+        "KLL": "0.3c",
+        "Date": "2015-08-16",
+        "Generator": "KIICONF 0.2"
+    },
+    "matrix": [
+        {
+            "code": "0x00",
+            "layers": {
+                "0": {
+                    "key": "ESC"
+                }
+            }
+        },
+        {
+            "code": "0x01",
+            "layers": {
+                "0": {
+                    "key": "1"
+                }
+            }
+        },
+        {
+            "code": "0x02",
+            "layers": {
+                "0": {
+                    "key": "2"
+                }
+            }
+        },
+        {
+            "code": "0x03",
+            "layers": {
+                "0": {
+                    "key": "3"
+                }
+            }
+        },
+        {
+            "code": "0x04",
+            "layers": {
+                "0": {
+                    "key": "4"
+                }
+            }
+        },
+        {
+            "code": "0x05",
+            "layers": {
+                "0": {
+                    "key": "5"
+                }
+            }
+        },
+        {
+            "code": "0x06",
+            "layers": {
+                "0": {
+                    "key": "6"
+                }
+            }
+        },
+        {
+            "code": "0x08",
+            "layers": {
+                "0": {
+                    "key": "8"
+                }
+            }
+        },
+        {
+            "code": "0x09",
+            "layers": {
+                "0": {
+                    "key": "9"
+                }
+            }
+        },
+        {
+            "code": "0x0B",
+            "layers": {
+                "0": {
+                    "key": "MINUS"
+                }
+            }
+        },
+        {
+            "code": "0x0D",
+            "layers": {
+                "0": {
+                    "key": "HASH"
+                }
+            }
+        },
+        {
+            "code": "0x0E",
+            "layers": {
+                "0": {
+                    "key": "BACKSPACE"
+                }
+            }
+        },
+        {
+            "code": "0x0F",
+            "layers": {
+                "0": {
+                    "key": "BACKTICK"
+                }
+            }
+        },
+        {
+            "code": "0x10",
+            "layers": {
+                "0": {
+                    "key": "TAB"
+                }
+            }
+        },
+        {
+            "code": "0x11",
+            "layers": {
+                "0": {
+                    "key": "Q"
+                }
+            }
+        },
+        {
+            "code": "0x12",
+            "layers": {
+                "0": {
+                    "key": "W"
+                }
+            }
+        },
+        {
+            "code": "0x13",
+            "layers": {
+                "0": {
+                    "key": "E"
+                }
+            }
+        },
+        {
+            "code": "0x14",
+            "layers": {
+                "0": {
+                    "key": "R"
+                }
+            }
+        },
+        {
+            "code": "0x15",
+            "layers": {
+                "0": {
+                    "key": "T"
+                }
+            }
+        },
+        {
+            "code": "0x16",
+            "layers": {
+                "0": {
+                    "key": "Y"
+                }
+            }
+        },
+        {
+            "code": "0x17",
+            "layers": {
+                "0": {
+                    "key": "U"
+                }
+            }
+        },
+        {
+            "code": "0x18",
+            "layers": {
+                "0": {
+                    "key": "I"
+                }
+            }
+        },
+        {
+            "code": "0x19",
+            "layers": {
+                "0": {
+                    "key": "O"
+                }
+            }
+        },
+        {
+            "code": "0x1A",
+            "layers": {
+                "0": {
+                    "key": "P"
+                }
+            }
+        },
+        {
+            "code": "0x1B",
+            "layers": {
+                "0": {
+                    "key": "LBRACE"
+                }
+            }
+        },
+        {
+            "code": "0x1C",
+            "layers": {
+                "0": {
+                    "key": "RBRACE"
+                }
+            }
+        },
+        {
+            "code": "0x1D",
+            "layers": {
+                "0": {
+                    "key": "BACKSLASH"
+                }
+            }
+        },
+        {
+            "code": "0x1E",
+            "layers": {
+                "0": {
+                    "key": "DELETE"
+                }
+            }
+        },
+        {
+            "code": "0x1F",
+            "layers": {
+                "0": {
+                    "key": "CAPSLOCK"
+                }
+            }
+        },
+        {
+            "code": "0x20",
+            "layers": {
+                "0": {
+                    "key": "A"
+                }
+            }
+        },
+        {
+            "code": "0x21",
+            "layers": {
+                "0": {
+                    "key": "S"
+                }
+            }
+        },
+        {
+            "code": "0x22",
+            "layers": {
+                "0": {
+                    "key": "D"
+                }
+            }
+        },
+        {
+            "code": "0x23",
+            "layers": {
+                "0": {
+                    "key": "F"
+                }
+            }
+        },
+        {
+            "code": "0x24",
+            "layers": {
+                "0": {
+                    "key": "G"
+                }
+            }
+        },
+        {
+            "code": "0x25",
+            "layers": {
+                "0": {
+                    "key": "H"
+                }
+            }
+        },
+        {
+            "code": "0x26",
+            "layers": {
+                "0": {
+                    "key": "J"
+                }
+            }
+        },
+        {
+            "code": "0x27",
+            "layers": {
+                "0": {
+                    "key": "K"
+                }
+            }
+        },
+        {
+            "code": "0x28",
+            "layers": {
+                "0": {
+                    "key": "L"
+                }
+            }
+        },
+        {
+            "code": "0x29",
+            "layers": {
+                "0": {
+                    "key": "SEMICOLON"
+                }
+            }
+        },
+        {
+            "code": "0x2A",
+            "layers": {
+                "0": {
+                    "key": "QUOTE"
+                }
+            }
+        },
+        {
+            "code": "0x2B",
+            "layers": {
+                "0": {
+                    "key": "APP"
+                }
+            }
+        },
+        {
+            "code": "0x2C",
+            "layers": {
+                "0": {
+                    "key": "ENTER"
+                }
+            }
+        },
+        {
+            "code": "0x2D",
+            "layers": {
+                "0": {
+                    "key": "PAGEUP"
+                }
+            }
+        },
+        {
+            "code": "0x2E",
+            "layers": {
+                "0": {
+                    "key": "LSHIFT"
+                }
+            }
+        },
+        {
+            "code": "0x2F",
+            "layers": {
+                "0": {
+                    "key": "ISO/"
+                }
+            }
+        },
+        {
+            "code": "0x30",
+            "layers": {
+                "0": {
+                    "key": "Z"
+                }
+            }
+        },
+        {
+            "code": "0x31",
+            "layers": {
+                "0": {
+                    "key": "X"
+                }
+            }
+        },
+        {
+            "code": "0x32",
+            "layers": {
+                "0": {
+                    "key": "C"
+                }
+            }
+        },
+        {
+            "code": "0x34",
+            "layers": {
+                "0": {
+                    "key": "B"
+                }
+            }
+        },
+        {
+            "code": "0x35",
+            "layers": {
+                "0": {
+                    "key": "N"
+                }
+            }
+        },
+        {
+            "code": "0x36",
+            "layers": {
+                "0": {
+                    "key": "M"
+                }
+            }
+        },
+        {
+            "code": "0x37",
+            "layers": {
+                "0": {
+                    "key": "COMMA"
+                }
+            }
+        },
+        {
+            "code": "0x38",
+            "layers": {
+                "0": {
+                    "key": "PERIOD"
+                }
+            }
+        },
+        {
+            "code": "0x39",
+            "layers": {
+                "0": {
+                    "key": "SLASH"
+                }
+            }
+        },
+        {
+            "code": "0x3A",
+            "layers": {
+                "0": {
+                    "key": "RSHIFT"
+                }
+            }
+        },
+        {
+            "code": "0x3B",
+            "layers": {
+                "0": {
+                    "key": "UP"
+                }
+            }
+        },
+        {
+            "code": "0x3C",
+            "layers": {
+                "0": {
+                    "key": "PAGEDOWN"
+                }
+            }
+        },
+        {
+            "code": "0x3D",
+            "layers": {
+                "0": {
+                    "key": "CTRL"
+                }
+            }
+        },
+        {
+            "code": "0x3E",
+            "layers": {
+                "0": {
+                    "key": "FUNCTION1"
+                }
+            }
+        },
+        {
+            "code": "0x3F",
+            "layers": {
+                "0": {
+                    "key": "LALT"
+                }
+            }
+        },
+        {
+            "code": "0x40",
+            "layers": {
+                "0": {
+                    "key": "SPACE"
+                }
+            }
+        },
+        {
+            "code": "0x41",
+            "layers": {
+                "0": {
+                    "key": "RALT"
+                }
+            }
+        },
+        {
+            "code": "0x42",
+            "layers": {
+                "0": {
+                    "key": "GUI"
+                }
+            }
+        },
+        {
+            "code": "0x43",
+            "layers": {
+                "0": {
+                    "key": "MENU"
+                }
+            }
+        },
+        {
+            "code": "0x44",
+            "layers": {
+                "0": {
+                    "key": "LEFT"
+                }
+            }
+        },
+        {
+            "code": "0x45",
+            "layers": {
+                "0": {
+                    "key": "DOWN"
+                }
+            }
+        },
+        {
+            "code": "0x46",
+            "layers": {
+                "0": {
+                    "key": "RIGHT"
+                }
+            }
+        }
+    ]
+}

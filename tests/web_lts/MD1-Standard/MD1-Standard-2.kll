@@ -1,0 +1,14 @@
+Name = "MD1";
+Variant = "standard";
+Layout = "Standard";
+Base = "StandardBlank";
+Version = "0.2";
+Author = "HaaTa (Jacob Alexander) 2014";
+KLL = "0.3";
+Date = "2014-09-14";
+Generator = "KIICONF 0.2";
+
+U"W" : flashMode();
+
+
+
