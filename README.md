@@ -18,3 +18,9 @@ Build backend for the configurator
 # Unit Tests
 
 `cargo test`
+
+# Debugging build failues
+
+Getting a shell
+
+`docker-compose -f docker-compose-build.yml run --entrypoint /bin/bash controller-050`

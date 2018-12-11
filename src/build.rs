@@ -22,28 +22,27 @@ pub fn start_build(
     hash: &str,
     scan: &str,
     varient: &str,
-    default_map: &str,
-    layers: &[String],
+    layers: Vec<String>,
 ) -> SharedChild {
     /*let mut sleep = Command::new("sleep");
     sleep.args(&["10"]);
     let process = SharedChild::spawn(&mut sleep).expect("Failed to execute!");*/
 
+    let mut args = vec![
+        "-f".to_string(),
+        "docker-compose-build.yml".to_string(),
+        "run".to_string(),
+        "--rm".to_string(),
+        "-T".to_string(),
+        service.to_string(),
+        hash.to_string(),
+        scan.to_string(),
+        varient.to_string(),
+    ];
+    args.extend(layers);
+
     let mut compile = Command::new("docker-compose");
-    compile.args(&[
-        "-f",
-        "docker-compose-build.yml",
-        "run",
-        "--rm",
-        "-T",
-        service,
-        hash,
-        scan,
-        varient,
-        default_map,
-        &layers[0],
-    ]);
-    //.output().expect("Failed to execute");
+    compile.args(&args);
     let process = SharedChild::spawn(&mut compile).expect("Failed to execute!");
 
     println!(" >> Created PID: {}", process.id());

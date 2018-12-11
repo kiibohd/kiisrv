@@ -8,6 +8,17 @@ mod tests {
 
     use rstest::rstest_parametrize;
 
+    #[rstest_parametrize(json_file, case("Kira-Standard.json"))]
+    fn parse_layout(json_file: &str) {
+        let filename = format!("{}/{}", "layouts", json_file);
+        println!("Parsing {}", filename);
+        let config: KllConfig = {
+            let contents = fs::read_to_string(filename).unwrap();
+            serde_json::from_str(&contents).unwrap()
+        };
+        assert!(true);
+    }
+
     #[rstest_parametrize(
         json_file,
         kll_dir,

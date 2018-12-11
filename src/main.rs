@@ -34,6 +34,13 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         let container = "controller-050";
 
         let config = body.config;
+        let name = config.header.name.replace(" ", "_"); //sanitize
+        let variant = config
+            .header
+            .variant
+            .clone()
+            .unwrap_or("".to_string())
+            .replace(" ", "_");
 
         let hash = {
             let mut hasher = DefaultHasher::new();
@@ -54,16 +61,18 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
             } else {
                 println!(" > Starting new build");
 
-                /*start_build(
-                    container,
-                    &hash,
-                    &config.scan,
-                    &config.varient,
-                    &config.default_map,
-                    &config.layers,
-                );*/
+                let build_dir = format!("{}/{}", "tmp_kll", hash);
+                fs::create_dir_all(&build_dir).unwrap();
 
-                let process = start_build(container, &hash, "MD1", "", "", &["".to_string()]);
+                let mut layers: Vec<String> = Vec::new();
+                let files = generate_kll(config, body.env == "lts");
+                for file in files {
+                    let filename = format!("{}/{}", build_dir, file.name);
+                    fs::write(&filename, file.content).unwrap();
+                    layers.push(format!("{}/{}/{}", "/tmp/kll", hash, filename));
+                }
+
+                let process = start_build(container, &hash, &name, &variant, layers);
                 let arc = Arc::new(process);
                 (*queue).insert(hash.clone(), Some(arc.clone()));
                 Some(arc)
@@ -71,13 +80,6 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
             // drop lock
         };
-
-        let files = generate_kll(config, body.env == "lts");
-        for file in files {
-            let filename = format!("{}/{}", "builds", file.name);
-            println!(" @@@ Write {}", filename);
-            fs::write(filename, file.content).unwrap();
-        }
 
         let success = match job {
             Some(arc) => {
@@ -95,17 +97,17 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 }
 
                 exit_status.success()
-            },
+            }
             None => {
                 println!(" > Job already in finished {}. Nothing to do.", hash);
                 true
-            },
+            }
         };
 
         if success {
             let result = BuildResult {
-                filename: format!("{}/{}/kiibohd.dfu.bin", FILE_HOST, hash),
-                success:  true,
+                filename: format!("{}/{}.zip", FILE_HOST, hash),
+                success: true,
             };
 
             return Ok(Response::with((
@@ -122,12 +124,25 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         }
     } else if let Err(err) = req.get::<bodyparser::Struct<BuildRequest>>() {
         println!("Parse error: {:?}", err);
+        use bodyparser::BodyErrorCause::JsonError;
+        let s = if let JsonError(e) = err.cause {
+            println!("e: {:?}", e);
+            e.to_string()
+        } else {
+            err.detail
+        };
+
+        return Ok(Response::with((
+            status::BadRequest,
+            Header(headers::ContentType::json()),
+            format!("{{ \"error\": \"{}\" }}", s),
+        )));
     }
 
     return Ok(Response::with((
         status::BadRequest,
         Header(headers::ContentType::json()),
-        "{ error: \"bad request\" }",
+        "{ \"error\": \"bad request\" }",
     )));
 }
 
@@ -136,7 +151,7 @@ fn main() {
         .args(&["-f", "docker-compose.yml", "up", "-d", "--no-recreate"])
         .status()
         .expect("Failed!");
-    
+
     if !status.success() {
         std::process::exit(status.code().unwrap_or(1));
     }

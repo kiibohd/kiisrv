@@ -19,6 +19,10 @@ fi
 export PATH="/usr/lib/ccache:$PATH"
 export CCACHE_DIR="/mnt/ccache"
 
+# Double check with docker volume mountpoints
+IN_DIR="/mnt/kll"
+OUT_DIR="/mnt/builds"
+
 # Takes a layer path and prints the name(s) in cmake format
 # "layer1 layer1a"
 # Arg 1: List of file paths
@@ -82,11 +86,33 @@ case "$SCAN_MODULE" in
 	;;
 esac
 
-#	-e DefaultMapOverride="${DEFAULT_MAP}"
-#	-e PartialMapsExpandedOverride="${PARTIAL_MAPS}"
-#	-e Layout="${VARIANT}"
-pipenv run ./${BuildScript} -c /controller -o ${BUILD_PATH};
+export DefaultMapOverride="${DEFAULT_MAP}"
+export PartialMapsExpandedOverride="${PARTIAL_MAPS}"
+export Layout="${VARIANT}"
 
-OUT_DIR="/mnt/builds/${HASH}"
-mkdir -p "${OUT_DIR}"
-cp "${BUILD_PATH}/kiibohd.dfu.bin" "${OUT_DIR}"
+echo " @@@@@ DefaultMapOverride=${DefaultMapOverride}"
+echo " @@@@@ PartialMapsExpandedOverride=${PartialMapsExpandedOverride}"
+echo " @@@@@ Layout=${Layout}"
+ls -l "${IN_DIR}/${HASH}"
+echo "------------------------"
+
+# the kll compiler looks for files in the build dir
+mv ${IN_DIR}/${HASH}/* "${BUILD_PATH}"
+rmdir "${IN_DIR}/${HASH}"
+
+pipenv run ./${BuildScript} -c /controller -o "${BUILD_PATH}" \
+ 2>&1 | tee "${BUILD_PATH}/build.log"
+RETVAL=$?
+
+if [ $RETVAL -eq 0 ]; then
+	ZIP_NAME="${HASH}.zip"
+else
+	ZIP_NAME="${HASH}_error.zip"
+fi
+
+echo "------------------------"
+OUT_FILE="${OUT_DIR}/${ZIP_NAME}"
+echo " @@@@@ Creating build zip ${OUT_FILE}"
+
+cd "${BUILD_PATH}"
+zip -v "${OUT_FILE}" *.kll *.dfu.bin *.log *.h *.json

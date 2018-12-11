@@ -15,6 +15,7 @@ services:
     volumes:
       - ccache:/mnt/ccache
       - builds:/mnt/builds
+      - ./tmp_kll:/mnt/kll
 
 volumes:
   ccache:

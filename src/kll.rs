@@ -88,24 +88,24 @@ pub struct CannedAnimation {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct KllConfig {
-    pub matrix:     Vec<MatrixKey>,
-    pub custom:     Option<IndexMap<usize, String>>,
+    pub matrix: Vec<MatrixKey>,
+    pub custom: Option<IndexMap<usize, String>>,
     pub animations: Option<IndexMap<String, Animation>>,
-    pub canned:     Option<IndexMap<String, CannedAnimation>>,
-    pub defines:    Option<Vec<Define>>,
-    pub header:     KllHeader,
-    pub leds:       Option<Vec<Led>>,
+    pub canned: Option<IndexMap<String, CannedAnimation>>,
+    pub defines: Option<Vec<Define>>,
+    pub header: KllHeader,
+    pub leds: Option<Vec<Led>>,
 }
 
 pub struct KllFile {
     pub content: String,
-    pub name:    String,
+    pub name: String,
 }
 
 pub fn layout_matrix(filename: &str) -> Vec<MatrixKey> {
     println!("Reading {}", filename);
     let json: KllConfig = {
-        let contents = fs::read_to_string(filename).unwrap();
+        let contents = fs::read_to_string(filename).expect("Missing layout");
         serde_json::from_str(&contents).unwrap()
     };
     json.matrix
@@ -120,8 +120,8 @@ fn crop_str(s: &str, pos: usize) -> &str {
 
 pub fn generate_kll(config: KllConfig, is_lts: bool) -> Vec<KllFile> {
     let header = config.header;
-    let name = &header.name.replace(" ", "_"); //sanitize, replace ' '->'_'
-    let variant = header.variant.unwrap_or(" ".to_string());
+    let name = &header.name.replace(" ", "_"); //sanitize
+    let variant = header.variant.unwrap_or("".to_string()).replace(" ", "_");
     let layout = header.layout.clone();
     let base_layout = &header.base;
 
