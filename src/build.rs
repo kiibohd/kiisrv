@@ -11,6 +11,7 @@ pub struct BuildInfo {
     pub build_script: String,
     pub default_map: Vec<String>,
     pub partial_maps: Vec<String>,
+    pub split_keyboard: bool,
 }
 
 pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
@@ -33,8 +34,13 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
     }
     .to_string();
 
+    let split_keyboard = match name.to_lowercase().as_ref() {
+        "mdergo1" => true,
+        _ => false,
+    };
+
     let extra_map = match name.to_lowercase().as_ref() {
-        "ergodox" => vec![
+        "mdergo1" => vec![
             "stdFuncMap".to_string(),
             "infinity_ergodox/lcdFuncMap".to_string(),
         ],
@@ -64,6 +70,7 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
         build_script,
         default_map,
         partial_maps,
+        split_keyboard,
     }
 }
 
@@ -77,7 +84,7 @@ pub fn start_build(
     sleep.args(&["10"]);
     let process = SharedChild::spawn(&mut sleep).expect("Failed to execute!");*/
 
-    let args = vec![
+    let mut args = vec![
         "run".to_string(),
         "--rm".to_string(),
         "-T".to_string(),
@@ -90,11 +97,14 @@ pub fn start_build(
         ),
         "-e".to_string(),
         format!("Layout={}", config.variant),
-        container,
-        config.build_script,
-        kll_dir,
-        output_file,
     ];
+
+    if config.split_keyboard {
+        args.push("-e".to_string());
+        args.push("SPLIT_KEYBOARD=1".to_string());
+    }
+
+    args.extend_from_slice(&[container, config.build_script, kll_dir, output_file]);
 
     let mut compile = Command::new("docker-compose");
     compile.args(&args);
