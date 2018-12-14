@@ -5,13 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
     image: webapp
-    volumes:
-      - builds:/var/www
     ports:
       - "8080:8080"
 
     # Remove me when ubuntu 14.04 is less shitty
     network_mode: "host"
-
-volumes:
-  builds:

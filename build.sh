@@ -1,18 +1,18 @@
 #!/bin/bash
-# Jacob Alexander 2018
-# Arg 1: Build Directory
-# Arg 2: Scan Module
-# Arg 3: DefaultMap
-# Arg 4: Layer 1
-# Arg 5: Layer 2
-# etc.
-# Example: ./build_layout.bash <hash> <scan module> <variant> <default map> <layer1> <layer2>
-#          ./build_layout.bash c3184563548ed992bfd3574a238d3289 MD1 "" MD1-Hacker-0.kll MD1-Hacker-1.kll
-#          ./build_layout.bash c3184563548ed992bfd3574a238d3289 MD1 "" "" MD1-Hacker-1.kll
-# NOTE: If a layer is blank, set it as ""
+# Rowan Decker 2018
+# Arg 1: Build script (keyboard.bash)
+# Arg 2: Input dir (kll files)
+# Arg 2: Output file
+# Env: DefaultMapOverride, PartialMapsExpandedOverride, Layout
+#
+# Example:
+# export DefaultMapOverride="stdFuncMap KType-Standard-0"
+# export PartialMapsExpandedOverride="stdFuncMap KType-Standard-0;stdFuncMap KType-Standard-1"
+# export Layout="Standard"
+# ./build.sh KType.bash my_ktype/kll MyBuild.zip
 
-if [ "$#" -lt 4 ]; then
-	echo "Usage: <hash> <scan module> <variant> <default map> <layers...>"
+if [ "$#" -lt 3 ]; then
+	echo "Usage: <build script> <input dir> <output file>"
 	exit
 fi
 
@@ -20,99 +20,48 @@ export PATH="/usr/lib/ccache:$PATH"
 export CCACHE_DIR="/mnt/ccache"
 
 # Double check with docker volume mountpoints
-IN_DIR="/mnt/kll"
-OUT_DIR="/mnt/builds"
+CONTROLLER_DIR="/controller"
+IN_DIR="${IN_DIR:-/mnt/config}"
+OUT_DIR="${OUT_DIR:-/mnt/builds}"
 
-# Takes a layer path and prints the name(s) in cmake format
-# "layer1 layer1a"
-# Arg 1: List of file paths
-layer() {
-	output=""
-	for file in $@; do
-		filename=$(basename "${file}")
-		extension="${filename##*.}"
-		filename_base="${filename%.*}"
-		output="${output}${filename_base} "
-	done
-
-	# Output everything except the last character unless there was nothing in this layer
-	if [ "${output}" == "" ]; then
-		echo ""
-	else
-		echo "${output::${#output}-1}"
-	fi
-}
-
-HASH="${1}"; shift
-BUILD_PATH="/tmp/${HASH}"
-mkdir -p "${BUILD_PATH}"
-
-SCAN_MODULE="${1}"; shift
-VARIANT="${1}"; shift
-
-ExtraMap="stdFuncMap"
-DEFAULT_MAP="${ExtraMap} $(layer ${1})"
-
-PARTIAL_MAPS="${ExtraMap} $(layer ${1})"
-shift
-while (( "$#" >= "1" )); do
-	PARTIAL_MAPS="${PARTIAL_MAPS};${ExtraMap} $(layer ${1})"
-	shift
-done
-
-case "$SCAN_MODULE" in
-"MD1")      # Infinity
-	BuildScript="infinity.bash"
-	;;
-"MD1.1")    # Infinity LED
-	BuildScript="infinity_led.bash"
-	;;
-"MDErgo1")  # Ergodox
-	BuildScript="ergodox.bash"
-	ExtraMap="infinity_ergodox/lcdFuncMap"
-	;;
-"WhiteFox") # WhiteFox
-	BuildScript="whitefox.bash"
-	;;
-"KType")    # K-Type
-	BuildScript="k-type.bash"
-	;;
-"Kira")     # Kira
-	BuildScript="kira.bash"
-	;;
-*)
-	echo "ERROR: Unknown keyboard type"
-	exit 1
-	;;
-esac
-
-export DefaultMapOverride="${DEFAULT_MAP}"
-export PartialMapsExpandedOverride="${PARTIAL_MAPS}"
-export Layout="${VARIANT}"
+BuildScript="${1}"; shift
+KllDir="${IN_DIR}/${1}"; shift
+OutFile="${OUT_DIR}/${1}"; shift
 
 echo " @@@@@ DefaultMapOverride=${DefaultMapOverride}"
 echo " @@@@@ PartialMapsExpandedOverride=${PartialMapsExpandedOverride}"
 echo " @@@@@ Layout=${Layout}"
-ls -l "${IN_DIR}/${HASH}"
+ls -l "${KllDir}"
 echo "------------------------"
 
+BUILD_DIR=$(mktemp -d)
+echo " Build Dir: ${BUILD_DIR}"
+
+set -x
+mkdir -p "${BUILD_DIR}"
+
 # the kll compiler looks for files in the build dir
-mv ${IN_DIR}/${HASH}/* "${BUILD_PATH}"
-rmdir "${IN_DIR}/${HASH}"
+mv ${KllDir}/* "${BUILD_DIR}"
+rmdir "${KllDir}/${HASH}"
 
-pipenv run ./${BuildScript} -c /controller -o "${BUILD_PATH}" \
- 2>&1 | tee "${BUILD_PATH}/build.log"
+pipenv run ./${BuildScript} -c "${CONTROLLER_DIR}" -o "${BUILD_DIR}" \
+ 2>&1 | tee "${BUILD_DIR}/build.log"
 RETVAL=$?
+set +x
 
-if [ $RETVAL -eq 0 ]; then
-	ZIP_NAME="${HASH}.zip"
-else
-	ZIP_NAME="${HASH}_error.zip"
+if [ $RETVAL -ne 0 ]; then
+	OutFile="${OutFile%.*}_error.zip"
 fi
 
 echo "------------------------"
-OUT_FILE="${OUT_DIR}/${ZIP_NAME}"
-echo " @@@@@ Creating build zip ${OUT_FILE}"
+echo " @@@@@ Creating build zip ${OutFile}"
 
-cd "${BUILD_PATH}"
-zip -v "${OUT_FILE}" *.kll *.dfu.bin *.log *.h *.json
+cd "${BUILD_DIR}"
+mkdir kll
+cp *.kll kll/
+
+mkdir log
+mv *.log *.h log/
+
+zip -v -r "${OutFile}" *.kll *.dfu.bin *.json kll/ log/
+exit $RETVAL

@@ -7,11 +7,15 @@ edition = "2018"
 [dependencies]
 shared_child = "0.3.3"
 iron = "0.6.0"
+logger = "0.4.0"
+staticfile = "0.5.0"
+mount = "0.4.0"
 bodyparser = "0.8.0"
 persistent = "0.4.0"
 serde = "1.0.80"
 serde_derive = "1.0.80"
 serde_json = "1.0.33"
+pretty_env_logger = "0.3.0"
 
 [dev-dependencies]
 rstest = "0.2"

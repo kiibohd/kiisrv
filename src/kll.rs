@@ -102,7 +102,7 @@ pub struct KllFile {
     pub name: String,
 }
 
-pub fn layout_matrix(filename: &str) -> Vec<MatrixKey> {
+fn layout_matrix(filename: &str) -> Vec<MatrixKey> {
     println!("Reading {}", filename);
     let json: KllConfig = {
         let contents = fs::read_to_string(filename).expect("Missing layout");
@@ -118,8 +118,25 @@ fn crop_str(s: &str, pos: usize) -> &str {
     }
 }
 
-pub fn generate_kll(config: KllConfig, is_lts: bool) -> Vec<KllFile> {
-    let header = config.header;
+pub fn kll_filename(filename: &str) -> &str {
+    let basename = Path::new(filename).file_stem().unwrap_or(OsStr::new(""));
+    basename.to_str().unwrap_or("")
+}
+
+pub fn kll_layer(filenames: Vec<String>) -> String {
+    filenames
+        .iter()
+        .map(|f| kll_filename(f))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+pub fn kll_list(layers: Vec<String>) -> String {
+    layers.join(";")
+}
+
+pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
+    let header = config.header.clone();
     let name = &header.name.replace(" ", "_"); //sanitize
     let variant = header.variant.unwrap_or("".to_string()).replace(" ", "_");
     let layout = header.layout.clone();
@@ -242,7 +259,7 @@ pub fn generate_kll(config: KllConfig, is_lts: bool) -> Vec<KllFile> {
     let mut animations = "".to_string();
     let mut ignored_animations = Vec::new();
     if !is_lts {
-        match config.animations {
+        match &config.animations {
             Some(a) => {
                 animations = a
                     .iter()

@@ -1,45 +1,102 @@
 use crate::kll::KllConfig;
 
+use crate::kll::*;
+use shared_child::SharedChild;
 use std::process::Command;
 
-use serde_derive::{Deserialize, Serialize};
-use shared_child::SharedChild;
-
-#[derive(Clone, Deserialize)]
-pub struct BuildRequest {
-    pub config: KllConfig,
-    pub env:    String,
+#[derive(Debug)]
+pub struct BuildInfo {
+    pub name: String,
+    pub variant: String,
+    pub build_script: String,
+    pub default_map: Vec<String>,
+    pub partial_maps: Vec<String>,
 }
 
-#[derive(Clone, Serialize)]
-pub struct BuildResult {
-    pub filename: String,
-    pub success:  bool,
+pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
+    let name = config.header.name.replace(" ", "_"); //sanitize
+    let variant = config
+        .header
+        .variant
+        .clone()
+        .unwrap_or("".to_string())
+        .replace(" ", "_");
+
+    let build_script = match name.to_lowercase().as_ref() {
+        "md1" => "infinity.bash",
+        "md1.1" => "infinity_led.bash",
+        "mdergo1" => "ergodox.bash",
+        "whitefox" => "whitefox.bash",
+        "ktype" => "k-type.bash",
+        "kira" => "kira.bash",
+        _ => panic!("Unknown keyboard {}", name),
+    }
+    .to_string();
+
+    let extra_map = match name.to_lowercase().as_ref() {
+        "ergodox" => vec![
+            "stdFuncMap".to_string(),
+            "infinity_ergodox/lcdFuncMap".to_string(),
+        ],
+        _ => vec!["stdFuncMap".to_string()],
+    };
+
+    let mut layers = layers.iter();
+    let base_layer = kll_filename(layers.next().unwrap());
+
+    let default_map = {
+        let mut layer = extra_map.clone();
+        layer.push(base_layer.to_string());
+        layer
+    };
+
+    let partial_maps = layers
+        .map(|l| {
+            let mut layer = extra_map.clone();
+            layer.push(l.to_string());
+            kll_layer(layer)
+        })
+        .collect::<Vec<_>>();
+
+    BuildInfo {
+        name,
+        variant,
+        build_script,
+        default_map,
+        partial_maps,
+    }
 }
 
 pub fn start_build(
-    service: &str,
-    hash: &str,
-    scan: &str,
-    varient: &str,
-    layers: Vec<String>,
+    container: String,
+    config: BuildInfo,
+    kll_dir: String,
+    output_file: String,
 ) -> SharedChild {
     /*let mut sleep = Command::new("sleep");
     sleep.args(&["10"]);
     let process = SharedChild::spawn(&mut sleep).expect("Failed to execute!");*/
 
-    let mut args = vec![
+    let args = vec![
         "-f".to_string(),
         "docker-compose-build.yml".to_string(),
         "run".to_string(),
         "--rm".to_string(),
         "-T".to_string(),
-        service.to_string(),
-        hash.to_string(),
-        scan.to_string(),
-        varient.to_string(),
+        "-e".to_string(),
+        format!("DefaultMapOverride={}", kll_layer(config.default_map)),
+        "-e".to_string(),
+        format!(
+            "PartialMapsExpandedOverride={}",
+            kll_list(config.partial_maps)
+        ),
+        "-e".to_string(),
+        format!("Layout={}", config.variant),
+        container,
+        config.build_script,
+        kll_dir,
+        output_file,
     ];
-    args.extend(layers);
 
     let mut compile = Command::new("docker-compose");
     compile.args(&args);
@@ -47,17 +104,6 @@ pub fn start_build(
 
     println!(" >> Created PID: {}", process.id());
     return process;
-
-    /*if result.status.success() {
-        println!("Finished Build {}", hash);
-        return Some(hash.to_string());
-    } else {
-        println!("Failure!");
-        println!("{}", String::from_utf8_lossy(&result.stdout));
-        println!("{}", String::from_utf8_lossy(&result.stderr));
-    }
-    
-    None*/
 }
 
 pub fn list_containers() -> Vec<String> {

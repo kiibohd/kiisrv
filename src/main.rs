@@ -4,24 +4,39 @@ mod kll;
 use crate::build::*;
 use crate::kll::*;
 
-use serde_json;
-
-use std::fs;
 use std::collections::hash_map::{DefaultHasher, HashMap};
-use std::process::Command;
+use std::fs;
 use std::hash::{Hash, Hasher};
+use std::path::Path;
 use std::sync::Arc;
 
 use bodyparser;
 use iron::prelude::*;
 use iron::{headers, modifiers::Header, status, typemap::Key};
+use logger::Logger;
+use mount::Mount;
 use persistent::{Read, Write};
+use staticfile::Static;
+
+use serde_derive::{Deserialize, Serialize};
+use serde_json;
 use shared_child::SharedChild;
 
 const API_HOST: &str = "localhost:3000";
-//const FILE_HOST: &str = "https://configurator.input.club";
-const FILE_HOST: &str = "http://localhost:8080";
+const FILE_HOST: &str = "./tmp";
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
+
+#[derive(Clone, Deserialize)]
+pub struct BuildRequest {
+    pub config: KllConfig,
+    pub env: String,
+}
+
+#[derive(Clone, Serialize)]
+pub struct BuildResult {
+    pub filename: String,
+    pub success: bool,
+}
 
 #[derive(Copy, Clone)]
 pub struct JobQueue;
@@ -31,16 +46,13 @@ impl Key for JobQueue {
 
 fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
     if let Ok(Some(body)) = req.get::<bodyparser::Struct<BuildRequest>>() {
-        let container = "controller-050";
-
         let config = body.config;
-        let name = config.header.name.replace(" ", "_"); //sanitize
-        let variant = config
-            .header
-            .variant
-            .clone()
-            .unwrap_or("".to_string())
-            .replace(" ", "_");
+        let container = match body.env.as_ref() {
+            "lts" => "controller-050",
+            "latest" => "controller-050",
+            _ => "controller-050",
+        }
+        .to_string();
 
         let hash = {
             let mut hasher = DefaultHasher::new();
@@ -61,18 +73,25 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
             } else {
                 println!(" > Starting new build");
 
-                let build_dir = format!("{}/{}", "tmp_kll", hash);
-                fs::create_dir_all(&build_dir).unwrap();
+                let config_dir = format!("{}/{}", "tmp_config", hash);
+                fs::create_dir_all(&config_dir).unwrap();
 
                 let mut layers: Vec<String> = Vec::new();
-                let files = generate_kll(config, body.env == "lts");
+                let files = generate_kll(&config, body.env == "lts");
                 for file in files {
-                    let filename = format!("{}/{}", build_dir, file.name);
+                    let filename = format!("{}/{}", config_dir, file.name);
                     fs::write(&filename, file.content).unwrap();
-                    layers.push(format!("{}/{}/{}", "/tmp/kll", hash, filename));
+                    layers.push(format!("{}", filename));
                 }
 
-                let process = start_build(container, &hash, &name, &variant, layers);
+                let info = configure_build(&config, layers);
+                let output_file = format!("{}-{}-{}.zip", info.name, info.variant, hash);
+                println!("{:?}", info);
+
+                let config_file = format!("{}/{}-{}.json", config_dir, info.name, info.variant);
+                fs::write(&config_file, serde_json::to_string(&config).unwrap()).unwrap();
+
+                let process = start_build(container, info, hash.clone(), output_file);
                 let arc = Arc::new(process);
                 (*queue).insert(hash.clone(), Some(arc.clone()));
                 Some(arc)
@@ -80,6 +99,9 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
             // drop lock
         };
+
+        let info = configure_build(&config, vec!["".to_string()]);
+        let output_file = format!("{}-{}-{}.zip", info.name, info.variant, hash);
 
         let success = match job {
             Some(arc) => {
@@ -99,14 +121,14 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 exit_status.success()
             }
             None => {
-                println!(" > Job already in finished {}. Nothing to do.", hash);
+                println!(" > Job already in finished {}. Updating time.", hash);
                 true
             }
         };
 
         if success {
             let result = BuildResult {
-                filename: format!("{}/{}.zip", FILE_HOST, hash),
+                filename: format!("{}/{}", FILE_HOST, output_file),
                 success: true,
             };
 
@@ -147,14 +169,16 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 }
 
 fn main() {
-    let status = Command::new("docker-compose")
+    pretty_env_logger::init();
+
+    /*let status = Command::new("docker-compose")
         .args(&["-f", "docker-compose.yml", "up", "-d", "--no-recreate"])
         .status()
         .expect("Failed!");
 
     if !status.success() {
         std::process::exit(status.code().unwrap_or(1));
-    }
+    }*/
 
     let queue: HashMap<String, Option<Arc<SharedChild>>> = HashMap::new();
 
@@ -172,9 +196,18 @@ fn main() {
     println!("\nAvailable build containers:");
     println!("{:?}", list_containers());
 
+    let (logger_before, logger_after) = Logger::new(None);
+
+    let mut mount = Mount::new();
+    mount.mount("/layouts/", Static::new(Path::new("./layouts/")));
+    mount.mount("/tmp/", Static::new(Path::new("./tmp_builds/")));
+    mount.mount("/", build_request);
+
     println!("\nBuild dispatcher starting.\nListening on {}", API_HOST);
-    let mut chain = Chain::new(build_request);
+    let mut chain = Chain::new(mount);
     chain.link_before(Write::<JobQueue>::one(queue));
     chain.link_before(Read::<bodyparser::MaxBodyLength>::one(MAX_BODY_LENGTH));
+    chain.link_before(logger_before);
+    chain.link_after(logger_after);
     Iron::new(chain).http(API_HOST).unwrap();
 }

@@ -14,9 +14,8 @@ services:
     tmpfs: /tmp
     volumes:
       - ccache:/mnt/ccache
-      - builds:/mnt/builds
-      - ./tmp_kll:/mnt/kll
+      - ./tmp_config:/mnt/config
+      - ./tmp_builds:/mnt/builds
 
 volumes:
   ccache:
-  builds:
