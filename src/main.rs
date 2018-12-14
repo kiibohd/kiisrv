@@ -53,8 +53,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         let config = body.config;
         let container = match body.env.as_ref() {
             "lts" => "controller-050",
-            "latest" => "controller-050",
-            _ => "controller-050",
+            "latest" | _ => "controller-051",
         }
         .to_string();
 

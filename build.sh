@@ -17,7 +17,6 @@ if [ "$#" -lt 3 ]; then
 fi
 
 export PATH="/usr/lib/ccache:$PATH"
-export CCACHE_DIR="/mnt/ccache"
 
 # Double check with docker volume mountpoints
 CONTROLLER_DIR="/controller"

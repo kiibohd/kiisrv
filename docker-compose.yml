@@ -1,23 +1,42 @@
-version: '3'
+version: '3.7'
+
+x-controller:
+  &controller-template
+  tmpfs: /tmp
+  environment:
+    - CCACHE_DIR="/mnt/ccache"
+  volumes:
+    - ccache:/mnt/ccache
+    - ./tmp_config:/mnt/config
+    - ./tmp_builds:/mnt/builds
+  # Remove me when ubuntu 14.04 is less shitty
+  network_mode: "host"
+
+x-build:
+  &build-defaults
+  context: .
+  dockerfile: Dockerfile
+
 services:
   build-template:
     build:
       context: .
       dockerfile: Dockerfile.buildenv
     image: build-template
+
   controller-050:
+    << : *controller-template
     build:
-      context: .
-      dockerfile: Dockerfile
+      << : *build-defaults
       args:
         - TAG=v0.5.0
-    tmpfs: /tmp
-    volumes:
-      - ccache:/mnt/ccache
-      - ./tmp_config:/mnt/config
-      - ./tmp_builds:/mnt/builds
-    # Remove me when ubuntu 14.04 is less shitty
-    network_mode: "host"
+
+  controller-051:
+    << : *controller-template
+    build:
+      << : *build-defaults
+      args:
+        - TAG=v0.5.1
 
 volumes:
   ccache:
