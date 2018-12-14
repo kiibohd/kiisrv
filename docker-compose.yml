@@ -5,6 +5,8 @@ x-controller:
   tmpfs: /tmp
   environment:
     - CCACHE_DIR="/mnt/ccache"
+  secrets:
+    - github_apikey
   volumes:
     - ccache:/mnt/ccache
     - ./tmp_config:/mnt/config
@@ -37,6 +39,10 @@ services:
       << : *build-defaults
       args:
         - TAG=v0.5.1
+
+secrets:
+  github_apikey:
+    file: ./apikey
 
 volumes:
   ccache:

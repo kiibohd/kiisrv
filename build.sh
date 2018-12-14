@@ -36,6 +36,9 @@ echo "------------------------"
 # try to use a cached kll layouts dir
 for f in /kll_cache/*; do ln -s $f /tmp/; done
 
+# try to use a github apikey secret
+[ -z "$GITHUB_APIKEY" ] && export GITHUB_APIKEY="$(cat /run/secrets/github_apikey)"
+
 BUILD_DIR=$(mktemp -d)
 echo " Build Dir: ${BUILD_DIR}"
 

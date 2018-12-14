@@ -11,6 +11,8 @@ Build backend for the configurator
 **Note:** If you are on arch linux you may need to run the following command first.
 `echo N | sudo tee /sys/module/overlay/parameters/metacopy`
 
+A [github access token](https://github.com/settings/tokens) can be stored in the `apikey` file to prevent rate limit exceptions.
+
 # Running
 
 `cargo run`
