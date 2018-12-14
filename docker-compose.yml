@@ -1,12 +1,21 @@
 version: '3'
 services:
-  webapp:
+  build-template:
+    build:
+      context: .
+      dockerfile: Dockerfile.buildenv
+    image: build-template
+  controller-050:
     build:
       context: .
       dockerfile: Dockerfile
-    image: webapp
-    ports:
-      - "8080:8080"
+      args:
+        - TAG=v0.5.0
+    tmpfs: /tmp
+    volumes:
+      - ccache:/mnt/ccache
+      - ./tmp_config:/mnt/config
+      - ./tmp_builds:/mnt/builds
 
-    # Remove me when ubuntu 14.04 is less shitty
-    network_mode: "host"
+volumes:
+  ccache:

@@ -78,8 +78,6 @@ pub fn start_build(
     let process = SharedChild::spawn(&mut sleep).expect("Failed to execute!");*/
 
     let args = vec![
-        "-f".to_string(),
-        "docker-compose-build.yml".to_string(),
         "run".to_string(),
         "--rm".to_string(),
         "-T".to_string(),
@@ -108,23 +106,19 @@ pub fn start_build(
 
 pub fn list_containers() -> Vec<String> {
     let result = Command::new("docker-compose")
-        .args(&[
-            "-f",
-            "docker-compose-build.yml",
-            "config",
-            "--services",
-        ])
+        .args(&["config", "--services"])
         .output()
         .expect("Failed!");
     let out = String::from_utf8_lossy(&result.stdout);
-    out.lines().skip(1).map(|s| s.to_string()).collect()
+    out.lines()
+        .filter(|s| !s.contains("template"))
+        .map(|s| s.to_string())
+        .collect()
 }
 
 pub fn get_builds(service: &str) -> String {
     let result = Command::new("docker-compose")
         .args(&[
-            "-f",
-            "docker-compose-build.yml",
             "run",
             "--rm",
             "--entrypoint",
@@ -142,8 +136,6 @@ pub fn get_builds(service: &str) -> String {
 fn old_builds(service: &str) {
     let status = Command::new("docker-compose")
         .args(&[
-            "-f",
-            "docker-compose-build.yml",
             "run",
             "--rm",
             "--entrypoint",
