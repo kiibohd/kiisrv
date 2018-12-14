@@ -34,6 +34,9 @@ echo " @@@@@ Layout=${Layout}"
 ls -l "${KllDir}"
 echo "------------------------"
 
+# try to use a cached kll layouts dir
+for f in /kll_cache/*; do ln -s $f /tmp/; done
+
 BUILD_DIR=$(mktemp -d)
 echo " Build Dir: ${BUILD_DIR}"
 
