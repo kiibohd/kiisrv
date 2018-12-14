@@ -63,5 +63,5 @@ cp *.kll kll/
 mkdir log
 mv *.log *.h log/
 
-zip -v -r "${OutFile}" *.kll *.dfu.bin *.json kll/ log/
+zip -v "${OutFile}" *.kll *.dfu.bin *.json kll/* log/*
 exit $RETVAL

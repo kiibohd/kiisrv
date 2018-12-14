@@ -22,9 +22,13 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use shared_child::SharedChild;
 
-const API_HOST: &str = "localhost:3000";
-const FILE_HOST: &str = "./tmp";
+const API_HOST: &str = "0.0.0.0:3000";
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
+const BUILD_ROUTE: &str = "./tmp";
+
+const LAYOUT_DIR: &str = "./layouts";
+const BUILD_DIR: &str = "./tmp_builds";
+const CONFIG_DIR: &str = "./tmp_config";
 
 #[derive(Clone, Deserialize)]
 pub struct BuildRequest {
@@ -73,7 +77,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
             } else {
                 println!(" > Starting new build");
 
-                let config_dir = format!("{}/{}", "tmp_config", hash);
+                let config_dir = format!("{}/{}", CONFIG_DIR, hash);
                 fs::create_dir_all(&config_dir).unwrap();
 
                 let mut layers: Vec<String> = Vec::new();
@@ -128,7 +132,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
         if success {
             let result = BuildResult {
-                filename: format!("{}/{}", FILE_HOST, output_file),
+                filename: format!("{}/{}", BUILD_ROUTE, output_file),
                 success: true,
             };
 
@@ -199,8 +203,8 @@ fn main() {
     let (logger_before, logger_after) = Logger::new(None);
 
     let mut mount = Mount::new();
-    mount.mount("/layouts/", Static::new(Path::new("./layouts/")));
-    mount.mount("/tmp/", Static::new(Path::new("./tmp_builds/")));
+    mount.mount("/layouts/", Static::new(Path::new(LAYOUT_DIR)));
+    mount.mount("/tmp/", Static::new(Path::new(BUILD_DIR)));
     mount.mount("/", build_request);
 
     println!("\nBuild dispatcher starting.\nListening on {}", API_HOST);
