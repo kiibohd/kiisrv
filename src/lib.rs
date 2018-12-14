@@ -60,7 +60,9 @@ mod tests {
         }
     }
 
-    #[rstest_parametrize(json_file, kll_dir,
+    #[rstest_parametrize(
+        json_file,
+        kll_dir,
         case("K-Type-Standard.json", "KType-Standard"),
         case("K-Type-NoAnimations.json", "KType-NoAnimations"),
         case("MD1.1-Alphabet.json", "MD1.1-Alphabet"),
@@ -79,8 +81,8 @@ mod tests {
         case("WhiteFox-IsoBlank.json", "WhiteFox-IsoBlank"),
         case("WhiteFox-JackBlank.json", "WhiteFox-JackBlank"),
         case("WhiteFox-TrueFoxBlank.json", "WhiteFox-TrueFoxBlank"),
-        case("WhiteFox-VanillaBlank.json", "WhiteFox-VanillaBlank"), 
-        case("WhiteFox-WinkeylessBlank.json", "WhiteFox-WinkeylessBlank"),
+        case("WhiteFox-VanillaBlank.json", "WhiteFox-VanillaBlank"),
+        case("WhiteFox-WinkeylessBlank.json", "WhiteFox-WinkeylessBlank")
     )]
     fn generate_kll_lts(json_file: &str, kll_dir: &str) {
         let filename = format!("{}/{}", "layouts", json_file);

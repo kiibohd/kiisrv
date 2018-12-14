@@ -1,31 +1,33 @@
 use indexmap::IndexMap;
-use std::fs;
 use serde_derive::{Deserialize, Serialize};
+use std::ffi::OsStr;
+use std::fs;
+use std::path::Path;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Animation {
-    pub frames:   Vec<String>,
+    pub frames: Vec<String>,
     pub settings: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Define {
-    pub name:  String,
+    pub name: String,
     pub value: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-#[serde(rename_all = "PascalCase")] 
+#[serde(rename_all = "PascalCase")]
 pub struct KllHeader {
-    pub name:      String,
-    pub variant:   Option<String>,
-    pub layout:    String,
-    pub base:      String,
-    pub version:   String,
-    pub author:    String,
+    pub name: String,
+    pub variant: Option<String>,
+    pub layout: String,
+    pub base: String,
+    pub version: String,
+    pub author: String,
     #[serde(rename = "KLL")]
-    pub kll:       String,
-    pub date:      String,
+    pub kll: String,
+    pub date: String,
     pub generator: String,
     #[serde(flatten)]
     pub other: serde_json::Map<String, serde_json::Value>,
@@ -33,16 +35,16 @@ pub struct KllHeader {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Led {
-    pub id:       usize,
+    pub id: usize,
     #[serde(rename = "scanCode")]
     pub scan_code: Option<String>,
-    pub x:        f32,
-    pub y:        f32,
+    pub x: f32,
+    pub y: f32,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct KeyAction {
-    pub key:   String,
+    pub key: String,
     pub label: Option<String>,
 }
 
@@ -56,12 +58,12 @@ pub struct Trigger {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct MatrixKey {
-    pub code:     String,
-    pub x:        Option<f32>,
-    pub y:        Option<f32>,
-    pub w:        Option<f32>,
-    pub h:        Option<f32>,
-    pub layers:   IndexMap<usize, KeyAction>,
+    pub code: String,
+    pub x: Option<f32>,
+    pub y: Option<f32>,
+    pub w: Option<f32>,
+    pub h: Option<f32>,
+    pub layers: IndexMap<usize, KeyAction>,
     pub triggers: Option<IndexMap<usize, Trigger>>,
 }
 
@@ -196,7 +198,7 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
                     }
                 }
             }
-        },
+        }
         _ => {
             for (i, key) in config.matrix.iter().enumerate() {
                 // TODO: Dedup with ergodox
@@ -222,7 +224,7 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
                     }
                 }
             }
-        },
+        }
     }
 
     let mut headers: IndexMap<String, String> = IndexMap::new();
@@ -284,8 +286,8 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
                     })
                     .collect::<Vec<_>>()
                     .join("\n");
-            },
-            _ => {},
+            }
+            _ => {}
         }
     }
 
@@ -368,7 +370,7 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
 
         files.push(KllFile {
             content: out,
-            name:    format!("{}-{}.kll", layout_name, n),
+            name: format!("{}-{}.kll", layout_name, n),
         });
     }
 
