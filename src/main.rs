@@ -21,6 +21,9 @@ use router::Router;
 use staticfile::Static;
 use urlencoded::UrlEncodedQuery;
 
+use chrono::prelude::*;
+use rusqlite::{types::ToSql, Connection};
+
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use shared_child::SharedChild;
@@ -45,10 +48,16 @@ pub struct BuildResult {
     pub success: bool,
 }
 
+#[derive(Clone)]
+pub enum JobEntry {
+    Building(Arc<SharedChild>),
+    Finished(bool),
+}
+
 #[derive(Copy, Clone)]
 pub struct JobQueue;
 impl Key for JobQueue {
-    type Value = HashMap<String, Option<Arc<SharedChild>>>;
+    type Value = HashMap<String, JobEntry>;
 }
 
 fn get_layout(req: &mut Request<'_, '_>) -> IronResult<Response> {
@@ -87,6 +96,10 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         }
         .to_string();
 
+        let config_str = serde_json::to_string(&config).unwrap();
+
+        let request_time: DateTime<Utc> = Utc::now();
+
         let hash = {
             let mut hasher = DefaultHasher::new();
             container.hash(&mut hasher);
@@ -96,9 +109,9 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         };
         println!("Received request: {}", hash);
 
-        let job: Option<Arc<SharedChild>> = {
+        let job: JobEntry = {
             let mutex = req.get::<Write<JobQueue>>().unwrap();
-            let mut queue = mutex.lock().unwrap();
+            let mut queue = mutex.lock().expect("Could not lock mutex"); // *** Panics if poisoned **
 
             if let Some(job) = (*queue).get(&hash) {
                 println!(" > Existing task");
@@ -125,9 +138,9 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 fs::write(&config_file, &config_str).unwrap();
 
                 let process = start_build(container, info, hash.clone(), output_file);
-                let arc = Arc::new(process);
-                (*queue).insert(hash.clone(), Some(arc.clone()));
-                Some(arc)
+                let job = JobEntry::Building(Arc::new(process));
+                (*queue).insert(hash.clone(), job.clone());
+                job
             }
 
             // drop lock
@@ -136,26 +149,28 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         let info = configure_build(&config, vec!["".to_string()]);
         let output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
 
-        let success = match job {
-            Some(arc) => {
+        let (success, duration) = match job {
+            JobEntry::Building(arc) => {
                 let process = arc.clone();
                 println!(" > Waiting for task to finish {}", process.id());
                 let exit_status = process.wait().unwrap();
+                let success: bool = exit_status.success();
                 println!(" > Done");
 
                 {
-                    let rwlock = req.get::<Write<JobQueue>>().unwrap();
-                    let mut queue = rwlock.lock().unwrap();
-                    let job = (*queue).get_mut(&hash).unwrap();
-                    *job = None;
+                    let rwlock = req.get::<Write<JobQueue>>().expect("Could not find mutex");
+                    let mut queue = rwlock.lock().expect("Could not lock mutex");
+                    let job = (*queue).get_mut(&hash).expect("Could not find job");
+                    *job = JobEntry::Finished(success);
                     // drop lock
                 }
 
-                exit_status.success()
+                let duration = Some(Utc::now().signed_duration_since(request_time));
+                (success, duration)
             }
-            None => {
+            JobEntry::Finished(success) => {
                 println!(" > Job already in finished {}. Updating time.", hash);
-                true
+                (success, None)
             }
         };
 
@@ -222,7 +237,7 @@ fn main() {
         std::process::exit(status.code().unwrap_or(1));
     }*/
 
-    let queue: HashMap<String, Option<Arc<SharedChild>>> = HashMap::new();
+    let queue: HashMap<String, JobEntry> = HashMap::new();
 
     /*println!("\nExisting builds: ");
     let builds = get_builds("controller-050");

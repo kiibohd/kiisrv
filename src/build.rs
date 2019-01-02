@@ -23,11 +23,7 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
         .clone()
         .unwrap_or("".to_string())
         .replace(" ", "_");
-    let layout = config
-        .header
-        .layout
-        .clone()
-        .replace(" ", "_");
+    let layout = config.header.layout.clone().replace(" ", "_");
 
     let build_script = match name.to_lowercase().as_ref() {
         "md1" => "infinity.bash",
