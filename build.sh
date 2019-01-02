@@ -74,11 +74,13 @@ if [ "${SPLIT_KEYBOARD}" == "1" ]; then
 	wait $PID_LEFT $PID_RIGHT
 	RETVAL=$?
 
+	ln -s ${LBuildPath}/build.log ${BUILD_DIR}/build.log
 	ln -s ${LBuildPath}/kiibohd.dfu.bin ${BUILD_DIR}/left_kiibohd.dfu.bin
 	ln -s ${LBuildPath}/kiibohd.secure.dfu.bin ${BUILD_DIR}/left_kiibohd.secure.dfu.bin
 	ln -s ${LBuildPath}/kll.json ${BUILD_DIR}/left_kll.json
 	ln -s ${LBuildPath}/generatedKeymap.h ${BUILD_DIR}/left_generatedKeymap.h
 	ln -s ${LBuildPath}/kll_defs.h ${BUILD_DIR}/left_kll_defs.h
+	ln -s ${RBuildPath}/build.log ${BUILD_DIR}/build.log
 	ln -s ${RBuildPath}/kiibohd.dfu.bin ${BUILD_DIR}/right_kiibohd.dfu.bin
 	ln -s ${RBuildPath}/kiibohd.secure.dfu.bin ${BUILD_DIR}/right_kiibohd.secure.dfu.bin
 	ln -s ${RBuildPath}/kll.json ${BUILD_DIR}/right_kll.json
