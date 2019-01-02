@@ -8,6 +8,7 @@ use std::collections::hash_map::{DefaultHasher, HashMap};
 use std::fs;
 use std::hash::{Hash, Hasher};
 use std::path::Path;
+use std::process::Command;
 use std::sync::Arc;
 
 use bodyparser;
@@ -16,7 +17,9 @@ use iron::{headers, modifiers::Header, status, typemap::Key};
 use logger::Logger;
 use mount::Mount;
 use persistent::{Read, Write};
+use router::Router;
 use staticfile::Static;
+use urlencoded::UrlEncodedQuery;
 
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
@@ -46,6 +49,33 @@ pub struct BuildResult {
 pub struct JobQueue;
 impl Key for JobQueue {
     type Value = HashMap<String, Option<Arc<SharedChild>>>;
+}
+
+fn get_layout(req: &mut Request<'_, '_>) -> IronResult<Response> {
+    let mut default_params = HashMap::new();
+    default_params.insert("rev".to_string(), vec!["HEAD".to_string()]);
+    let params = &req.get::<UrlEncodedQuery>().unwrap_or(default_params);
+    let rev = &params.get("rev").unwrap()[0];
+
+    let file = &req
+        .extensions
+        .get::<Router>()
+        .unwrap()
+        .find("file")
+        .unwrap_or("/");
+    println!("Get layout {:?} ({})", *file, rev);
+
+    let result = Command::new("git")
+        .args(&["show", &format!("{}:{}/{}", rev, LAYOUT_DIR, file)])
+        .output()
+        .expect("Failed!");
+    let content = String::from_utf8_lossy(&result.stdout).to_string();
+
+    Ok(Response::with((
+        status::Ok,
+        Header(headers::ContentType::json()),
+        content,
+    )))
 }
 
 fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
@@ -210,8 +240,12 @@ fn main() {
 
     let (logger_before, logger_after) = Logger::new(None);
 
+    let mut layout_router = Router::new();
+    layout_router.get("/:file", get_layout, "layout");
+
     let mut mount = Mount::new();
-    mount.mount("/layouts/", Static::new(Path::new(LAYOUT_DIR)));
+    //mount.mount("/layouts/", Static::new(Path::new(LAYOUT_DIR)));
+    mount.mount("/layouts/", layout_router);
     mount.mount("/tmp/", Static::new(Path::new(BUILD_DIR)));
     mount.mount("/", build_request);
 
