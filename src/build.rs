@@ -8,6 +8,7 @@ use std::process::Command;
 pub struct BuildInfo {
     pub name: String,
     pub variant: String,
+    pub layout: String,
     pub build_script: String,
     pub default_map: Vec<String>,
     pub partial_maps: Vec<String>,
@@ -21,6 +22,11 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
         .variant
         .clone()
         .unwrap_or("".to_string())
+        .replace(" ", "_");
+    let layout = config
+        .header
+        .layout
+        .clone()
         .replace(" ", "_");
 
     let build_script = match name.to_lowercase().as_ref() {
@@ -67,6 +73,7 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
     BuildInfo {
         name,
         variant,
+        layout,
         build_script,
         default_map,
         partial_maps,

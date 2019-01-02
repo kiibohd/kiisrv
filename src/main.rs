@@ -22,7 +22,7 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use shared_child::SharedChild;
 
-const API_HOST: &str = "0.0.0.0:3000";
+const API_HOST: &str = "0.0.0.0:3001";
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
 const BUILD_ROUTE: &str = "./tmp";
 
@@ -53,7 +53,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         let config = body.config;
         let container = match body.env.as_ref() {
             "lts" => "controller-050",
-            "latest" | _ => "controller-051",
+            "latest" | _ => "controller-053",
         }
         .to_string();
 
@@ -88,11 +88,11 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 }
 
                 let info = configure_build(&config, layers);
-                let output_file = format!("{}-{}-{}.zip", info.name, info.variant, hash);
+                let output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
                 println!("{:?}", info);
 
-                let config_file = format!("{}/{}-{}.json", config_dir, info.name, info.variant);
-                fs::write(&config_file, serde_json::to_string(&config).unwrap()).unwrap();
+                let config_file = format!("{}/{}-{}.json", config_dir, info.name, info.layout);
+                fs::write(&config_file, &config_str).unwrap();
 
                 let process = start_build(container, info, hash.clone(), output_file);
                 let arc = Arc::new(process);
@@ -104,7 +104,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         };
 
         let info = configure_build(&config, vec!["".to_string()]);
-        let output_file = format!("{}-{}-{}.zip", info.name, info.variant, hash);
+        let output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
 
         let success = match job {
             Some(arc) => {
@@ -128,6 +128,15 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 true
             }
         };
+
+        let build_duration = match duration {
+            Some(t) => Some(t.num_milliseconds()),
+            None => None,
+        };
+        println!(
+            "Started at: {:?}, Duration: {:?}",
+            request_time, build_duration
+        );
 
         if success {
             let result = BuildResult {

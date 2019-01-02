@@ -6,6 +6,8 @@ use std::path::Path;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Animation {
+    #[serde(rename = "type")]
+    pub _type: Option<String>,
     pub frames: Vec<String>,
     pub settings: String,
 }

@@ -13,6 +13,7 @@ x-controller:
     - ./tmp_builds:/mnt/builds
   # Remove me when ubuntu 14.04 is less shitty
   network_mode: "host"
+  dns: 8.8.8.8
 
 x-build:
   &build-defaults
@@ -33,12 +34,12 @@ services:
       args:
         - TAG=v0.5.0
 
-  controller-051:
+  controller-053:
     << : *controller-template
     build:
       << : *build-defaults
       args:
-        - TAG=v0.5.1
+        - TAG=v0.5.3
 
 secrets:
   github_apikey:
