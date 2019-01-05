@@ -8,6 +8,7 @@ use std::collections::hash_map::{DefaultHasher, HashMap};
 use std::fs;
 use std::hash::{Hash, Hasher};
 use std::path::Path;
+use std::path::PathBuf;
 use std::process::Command;
 use std::sync::Arc;
 
@@ -72,10 +73,14 @@ fn get_layout(req: &mut Request<'_, '_>) -> IronResult<Response> {
         .unwrap()
         .find("file")
         .unwrap_or("/");
-    println!("Get layout {:?} ({})", *file, rev);
+
+    let path = PathBuf::from(format!("{}/{}", LAYOUT_DIR, file));
+    let realfile = fs::read_link(&path).unwrap_or(PathBuf::from(file));
+    let realpath = format!("{}/{}", LAYOUT_DIR, realfile.to_str().unwrap());
+    println!("Get layout {:?} ({})", file, rev);
 
     let result = Command::new("git")
-        .args(&["show", &format!("{}:{}/{}", rev, LAYOUT_DIR, file)])
+        .args(&["show", &format!("{}:{}", rev, realpath)])
         .output()
         .expect("Failed!");
     let content = String::from_utf8_lossy(&result.stdout).to_string();
