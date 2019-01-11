@@ -17,13 +17,15 @@ build() {
 	BUILD_DIR="$2"
 	(echo " Build Dir: ${BUILD_DIR}"
 
-	set -x
+	set -exo pipefail
 	mkdir -p "${BUILD_DIR}"
 
 	pipenv run ./${BuildScript} -c "${CONTROLLER_DIR}" -o "${BUILD_DIR}" \
 	 2>&1 | tee "${BUILD_DIR}/build.log"
+	RETVAL=$?
 
 	set +x
+	exit $RETVAL
 	)
 }
 
@@ -90,6 +92,7 @@ if [ "${SPLIT_KEYBOARD}" == "1" ]; then
 else
 	build "${BuildScript}" "${BUILD_DIR}"
 	RETVAL=$?
+	echo "Build Result: ${RETVAL}"
 fi
 
 if [ "$RETVAL" -ne 0 ]; then

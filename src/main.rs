@@ -142,7 +142,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 let config_file = format!("{}/{}-{}.json", config_dir, info.name, info.layout);
                 fs::write(&config_file, &config_str).unwrap();
 
-                let process = start_build(container, info, hash.clone(), output_file);
+                let process = start_build(container.clone(), info, hash.clone(), output_file);
                 let job = JobEntry::Building(Arc::new(process));
                 (*queue).insert(hash.clone(), job.clone());
                 job
@@ -152,7 +152,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         };
 
         let info = configure_build(&config, vec!["".to_string()]);
-        let output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
+        let mut output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
 
         let (success, duration) = match job {
             JobEntry::Building(arc) => {
@@ -188,24 +188,21 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
             request_time, build_duration
         );
 
-        if success {
-            let result = BuildResult {
-                filename: format!("{}/{}", BUILD_ROUTE, output_file),
-                success: true,
-            };
 
-            return Ok(Response::with((
-                status::Ok,
-                Header(headers::ContentType::json()),
-                serde_json::to_string(&result).unwrap(),
-            )));
-        } else {
-            return Ok(Response::with((
-                status::InternalServerError,
-                Header(headers::ContentType::json()),
-                "{ error: \"build failed\" }",
-            )));
+        if !success {
+            output_file = format!("{}-{}-{}_error.zip", info.name, info.layout, hash);
         }
+
+        let result = BuildResult {
+            filename: format!("{}/{}", BUILD_ROUTE, output_file),
+            success: success,
+        };
+
+        return Ok(Response::with((
+            status::Ok,
+            Header(headers::ContentType::json()),
+            serde_json::to_string(&result).unwrap(),
+        )));
     } else if let Err(err) = req.get::<bodyparser::Struct<BuildRequest>>() {
         println!("Parse error: {:?}", err);
         use bodyparser::BodyErrorCause::JsonError;
