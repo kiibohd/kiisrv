@@ -27,3 +27,6 @@ rstest = "0.2"
 [dependencies.indexmap]
 version = "1.0.2"
 features = ["serde-1"]
+
+[profile.release]
+panic = "abort"

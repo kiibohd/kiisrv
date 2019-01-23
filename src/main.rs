@@ -115,7 +115,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         println!("Received request: {}", hash);
 
         let job: JobEntry = {
-            let mutex = req.get::<Write<JobQueue>>().unwrap();
+            let mutex = req.get::<Write<JobQueue>>().expect("Could not find mutex");
             let mut queue = mutex.lock().expect("Could not lock mutex"); // *** Panics if poisoned **
 
             if let Some(job) = (*queue).get(&hash) {
@@ -125,13 +125,13 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 println!(" > Starting new build");
 
                 let config_dir = format!("{}/{}", CONFIG_DIR, hash);
-                fs::create_dir_all(&config_dir).unwrap();
+                fs::create_dir_all(&config_dir).expect("Could not create directory");
 
                 let mut layers: Vec<String> = Vec::new();
                 let files = generate_kll(&config, body.env == "lts");
                 for file in files {
                     let filename = format!("{}/{}", config_dir, file.name);
-                    fs::write(&filename, file.content).unwrap();
+                    fs::write(&filename, file.content).expect("Could not write kll file");
                     layers.push(format!("{}", filename));
                 }
 
@@ -140,7 +140,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 println!("{:?}", info);
 
                 let config_file = format!("{}/{}-{}.json", config_dir, info.name, info.layout);
-                fs::write(&config_file, &config_str).unwrap();
+                fs::write(&config_file, &config_str).expect("Could not write config file");
 
                 let process = start_build(container.clone(), info, hash.clone(), output_file);
                 let job = JobEntry::Building(Arc::new(process));
@@ -187,7 +187,6 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
             "Started at: {:?}, Duration: {:?}",
             request_time, build_duration
         );
-
 
         if !success {
             output_file = format!("{}-{}-{}_error.zip", info.name, info.layout, hash);
