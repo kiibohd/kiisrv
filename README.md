@@ -26,3 +26,14 @@ A [github access token](https://github.com/settings/tokens) can be stored in the
 Getting a shell
 
 `docker-compose run --entrypoint /bin/bash controller-050`
+
+# Upstart
+
+`sudo service kiisrv restart`
+`sudo tail -f /var/log/upstart/kiisrv.log`
+
+# Adding build container
+
+- Edit docker-compose.yml
+- docker-compose build
+- Edit src/main.rs
