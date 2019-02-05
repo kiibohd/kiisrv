@@ -4,7 +4,7 @@
         "Variant": "standard",
         "Layout": "Standard",
         "Base": "Standard",
-        "Version": "0.4",
+        "Version": "0.4.1",
         "Author": "jbondeson (Jeremy Bondeson) 2017",
         "KLL": "0.5c",
         "Date": "2019-02-04",
@@ -859,6 +859,10 @@
                 "0": {
                     "key": "\\",
                     "label": "\\"
+                },
+                "2": {
+                    "key": "#:gamma(2)",
+                    "label": "GAMMA"
                 }
             }
         },
