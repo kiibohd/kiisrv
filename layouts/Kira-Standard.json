@@ -1426,8 +1426,8 @@
                     "label": "P\u21b5"
                 },
                 "2": {
-                    "key": "#:A[test_animation](single)",
-                    "label": "A:single"
+                    "key": "#:A[test_animation](start)",
+                    "label": "A:start"
                 }
             }
         },
