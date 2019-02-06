@@ -44,6 +44,8 @@ BuildScript="${1}"; shift
 KllDir="${IN_DIR}/${1}"; shift
 OutFile="${OUT_DIR}/${1}"; shift
 
+echo
+echo " ========== STARTING BUILD ======== "
 echo " @@@@@ DefaultMapOverride=${DefaultMapOverride}"
 echo " @@@@@ PartialMapsExpandedOverride=${PartialMapsExpandedOverride}"
 echo " @@@@@ Layout=${Layout}"
@@ -59,7 +61,7 @@ for f in /kll_cache/*; do ln -s "$f" /tmp/; done
 # try to use a github apikey secret
 [ -z "$GITHUB_APIKEY" ] && export GITHUB_APIKEY="$(cat /run/secrets/github_apikey)"
 
-set -x
+#set -x
 # the kll compiler looks for files in the build dir
 mv ${KllDir}/* "${BUILD_DIR}"
 rmdir "${KllDir}/${HASH}"
@@ -112,4 +114,13 @@ mkdir log
 mv *.log *.h log/
 
 zip -v "${OutFile}" *.kll *.dfu.bin *.json kll/* log/*
+
+echo -n " >>> Build Completed "
+if [ "$RETVAL" -eq 0 ]; then
+echo -e "\e[1;34m[OK]\e[0m"
+else
+echo -e "\e[1;91m[ERROR]\e[0m"
+fi
+echo
+
 exit $RETVAL
