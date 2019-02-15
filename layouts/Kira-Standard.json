@@ -2661,7 +2661,7 @@
         },
         "keys_only_rotation": {
             "type": "custom",
-            "settings": "pfunc:interp, replace:clearactive",
+            "settings": "pfunc:interp, replace:clearactive, single",
             "frames": [
                 "S1(0xC1, 0x2D, 0x1D), S99(0xC1, 0x2D, 0x1D)",
                 "S1(0xEE, 0x6D, 0x28), S99(0xEE, 0x6D, 0x28)",
@@ -2687,7 +2687,7 @@
         },
         "underlighting_only_rotation": {
             "type": "custom",
-            "settings": "replace:clearactive",
+            "settings": "replace:clearactive, single",
             "frames": [
                 "P[18,21,24,27,30,115,118,120,122,113,33,108,49,106,65,104,82,85-86,88-90,92,95,98,100](0xC1, 0x2D, 0x1D)",
                 "P[18,21,24,27,30,115,118,120,122,113,33,108,49,106,65,104,82,85-86,88-90,92,95,98,100](0xEE, 0x6D, 0x28)",
