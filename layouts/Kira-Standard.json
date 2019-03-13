@@ -4,7 +4,7 @@
         "Variant": "standard",
         "Layout": "Standard",
         "Base": "Standard",
-        "Version": "0.4.2",
+        "Version": "0.4.3",
         "Author": "jbondeson (Jeremy Bondeson) 2017",
         "KLL": "0.5c",
         "Date": "2019-02-04",
@@ -2989,7 +2989,7 @@
                 "P[r:i,c:i](${start_color:end_color:0.95})",
                 "P[r:i,c:i](${end_color})"
             ],
-            "custom-kll": "S[0x00-0x5F] :+ A[${__NAME__}](start);"
+            "custom-kll": "S[0x00-0x63] :+ A[${__NAME__}](start);"
         },
         "single_color": {
             "settings": "replace:clear, pfunc:interp",
