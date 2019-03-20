@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `Versions` (
+	`name`           TEXT PRIMARY KEY,
+	`channel`        TEXT,
+	`container`      TEXT,
+	`git_tag`        TEXT
+);
+
+INSERT INTO `Versions` VALUES ("nightly",     "beta",   "controller-055b",  "v0.5.7");
+INSERT INTO `Versions` VALUES ("latest",      "stable", "controller-053",   "v0.5.7");
+INSERT INTO `Versions` VALUES ("lts",         "lts",    "controller-050",   "v0.5.0");
+
+INSERT INTO `Versions` VALUES ("v0.5.7",      "beta",   "controller-057",   "v0.5.7");
+INSERT INTO `Versions` VALUES ("v0.5.6",      "beta",   "controller-056",   "v0.5.6");
+INSERT INTO `Versions` VALUES ("v0.5.5",      "beta",   "controller-055",   "v0.5.5");
+INSERT INTO `Versions` VALUES ("v0.5.4",      "beta",   "controller-054",   "v0.5.4");
+--INSERT INTO `Versions` VALUES ("v0.5.3",      "stable", "controller-053",   "v0.5.3");
+--INSERT INTO `Versions` VALUES ("v0.5.2",      "stable", "controller-052",   "v0.5.2");
+--INSERT INTO `Versions` VALUES ("v0.5.1",      "stable", "controller-051",   "v0.5.1");
+INSERT INTO `Versions` VALUES ("v0.5.0",      "stable", "controller-050",   "v0.5.0");
+--INSERT INTO `Versions` VALUES ("v0.4.9",      "lts",    "controller-049",   "v0.4.9");

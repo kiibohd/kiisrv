@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS `Requests` (
+	`id`             INTEGER PRIMARY KEY AUTOINCREMENT,
+	`uid`            INTEGER,
+	`ip_addr`        TEXT NOT NULL,
+	`os`	         TEXT NOT NULL,
+	`web`	         INTEGER NOT NULL,
+	`serial`	 INTEGER,
+	`hash`           TEXT NOT NULL,
+	`board`          TEXT NOT NULL,
+	`variant`        TEXT NOT NULL,
+	`layers`         INTEGER NOT NULL,
+	`container`      TEXT NOT NULL,
+	`success`        INTEGER NOT NULL,
+	`request_time`   INTEGER NOT NULL,
+	`build_duration` INTEGER
+);
+
