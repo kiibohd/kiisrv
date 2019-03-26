@@ -34,19 +34,19 @@ services:
       args:
         - TAG=v0.5.0
 
-  controller-053:
-    << : *controller-template
-    build:
-      << : *build-defaults
-      args:
-        - TAG=v0.5.3
-
   controller-054:
     << : *controller-template
     build:
       << : *build-defaults
       args:
         - TAG=v0.5.4
+
+  controller-055:
+    << : *controller-template
+    build:
+      << : *build-defaults
+      args:
+        - TAG=v0.5.5
 
 secrets:
   github_apikey:

@@ -6,7 +6,7 @@
         "Base": "Standard",
         "Version": "0.4.3",
         "Author": "jbondeson (Jeremy Bondeson) 2017",
-        "KLL": "0.5c",
+        "KLL": "0.5.7.9",
         "Date": "2019-02-04",
         "Generator": "NONE"
     },
@@ -2919,6 +2919,120 @@
                 "P[c:-6%] (${color_1}),   P[c:20%](${color_2}), P[c:45%](${color_3}),   P[c:70%](${color_4}), P[c:95%](${color_5}),   P[c:120%](${color_1})",
                 "P[c:-4%] (${color_1}),   P[c:22%](${color_2}), P[c:47%](${color_3}),   P[c:72%](${color_4}), P[c:97%](${color_5}),   P[c:122%](${color_1})",
                 "P[c:-2%] (${color_1}),   P[c:24%](${color_2}), P[c:49%](${color_3}),   P[c:74%](${color_4}), P[c:99%](${color_5}),   P[c:124%](${color_1})"
+            ],
+            "custom-kll": ""
+        },
+        "custom_stripes": {
+            "settings": "framedelay:${speed}, framestretch, loop, replace:clear, pfunc:interp",
+            "type": "animation",
+            "description": "Create your own custom stripes of colors",
+            "configurable": [
+                {
+                    "name": "color_1",
+                    "type": "color",
+                    "default": {"r": 0, "g": 255, "b": 0}
+                },
+                {
+                    "name": "color_2",
+                    "type": "color",
+                    "default": {"r": 255, "g": 255, "b": 0}
+                },
+                {
+                    "name": "color_3",
+                    "type": "color",
+                    "default": {"r": 255, "g": 255, "b": 255}
+                },
+                {
+                    "name": "color_4",
+                    "type": "color",
+                    "default": {"r": 127, "g": 0, "b": 255}
+                },
+                {
+                    "name": "color_5",
+                    "type": "color",
+                    "default": {"r": 0, "g": 0, "b": 255}
+                },
+                {
+                    "name": "speed",
+                    "type": "select",
+                    "default": 3,
+                    "values": [
+                        {"name": "warp", "value": 1},
+                        {"name": "fast", "value": 2},
+                        {"name": "normal", "value": 3}
+                    ]
+                }
+            ],
+            "frames": [
+                "                                              P[c:0%] (${color_1}), P[c:22%](${color_1}),  P[c:28%](${color_2}), P[c:47%](${color_2}),  P[c:53%](${color_3}), P[c:72%](${color_3}),  P[c:78%] (${color_4}), P[c:98%] (${color_4}),  P[c:126%] (${color_5})",
+                "                       P[c:-8%](${color_5}),  P[c:2%] (${color_1}), P[c:24%](${color_1}),  P[c:30%](${color_2}), P[c:49%](${color_2}),  P[c:55%](${color_3}), P[c:74%](${color_3}),  P[c:80%] (${color_4}), P[c:102%](${color_4})",
+                "                       P[c:-6%](${color_5}),  P[c:4%] (${color_1}), P[c:26%](${color_1}),  P[c:32%](${color_2}), P[c:51%](${color_2}),  P[c:57%](${color_3}), P[c:76%](${color_3}),  P[c:82%] (${color_4}), P[c:104%](${color_4})",
+                "                       P[c:-4%](${color_5}),  P[c:6%] (${color_1}), P[c:28%](${color_1}),  P[c:34%](${color_2}), P[c:53%](${color_2}),  P[c:59%](${color_3}), P[c:78%](${color_3}),  P[c:84%] (${color_4}), P[c:106%](${color_4})",
+                "                       P[c:-2%](${color_5}),  P[c:8%] (${color_1}), P[c:30%](${color_1}),  P[c:36%](${color_2}), P[c:55%](${color_2}),  P[c:61%](${color_3}), P[c:80%](${color_3}),  P[c:86%] (${color_4}), P[c:108%](${color_4})",
+                "                       P[c:0%] (${color_5}),  P[c:10%](${color_1}), P[c:32%](${color_1}),  P[c:38%](${color_2}), P[c:57%](${color_2}),  P[c:63%](${color_3}), P[c:82%](${color_3}),  P[c:88%] (${color_4}), P[c:108%](${color_4})",
+                "P[c:-17%](${color_5}), P[c:2%] (${color_5}),  P[c:12%](${color_1}), P[c:34%](${color_1}),  P[c:40%](${color_2}), P[c:59%](${color_2}),  P[c:65%](${color_3}), P[c:84%](${color_3}),  P[c:90%] (${color_4}), P[c:110%](${color_4})",
+                "P[c:-15%](${color_5}), P[c:4%] (${color_5}),  P[c:14%](${color_1}), P[c:36%](${color_1}),  P[c:42%](${color_2}), P[c:61%](${color_2}),  P[c:67%](${color_3}), P[c:86%](${color_3}),  P[c:92%] (${color_4}), P[c:112%](${color_4})",
+                "P[c:-13%](${color_5}), P[c:6%] (${color_5}),  P[c:16%](${color_1}), P[c:38%](${color_1}),  P[c:44%](${color_2}), P[c:63%](${color_2}),  P[c:69%](${color_3}), P[c:88%](${color_3}),  P[c:94%] (${color_4}), P[c:114%](${color_4})",
+                "P[c:-11%](${color_5}), P[c:8%] (${color_5}),  P[c:18%](${color_1}), P[c:40%](${color_1}),  P[c:46%](${color_2}), P[c:65%](${color_2}),  P[c:71%](${color_3}), P[c:90%](${color_3}),  P[c:96%] (${color_4}), P[c:116%](${color_4})",
+                "P[c:-9%] (${color_5}), P[c:10%](${color_5}),  P[c:20%](${color_1}), P[c:42%](${color_1}),  P[c:48%](${color_2}), P[c:67%](${color_2}),  P[c:73%](${color_3}), P[c:92%](${color_3}),  P[c:98%] (${color_4}), P[c:118%](${color_4})",
+                "P[c:-7%] (${color_5}), P[c:12%](${color_5}),  P[c:22%](${color_1}), P[c:44%](${color_1}),  P[c:50%](${color_2}), P[c:69%](${color_2}),  P[c:75%](${color_3}), P[c:94%](${color_3}),  P[c:100%](${color_4})",
+                "P[c:-5%] (${color_5}), P[c:16%](${color_5}),  P[c:24%](${color_1}), P[c:46%](${color_1}),  P[c:52%](${color_2}), P[c:71%](${color_2}),  P[c:77%](${color_3}), P[c:96%](${color_3}),  P[c:102%](${color_4})",
+
+                "                                              P[c:0%] (${color_5}), P[c:22%](${color_5}),  P[c:28%](${color_1}), P[c:47%](${color_1}),  P[c:53%](${color_2}), P[c:72%](${color_2}),  P[c:78%] (${color_3}), P[c:98%] (${color_3}),  P[c:126%] (${color_4})",
+                "                       P[c:-8%](${color_4}),  P[c:2%] (${color_5}), P[c:24%](${color_5}),  P[c:30%](${color_1}), P[c:49%](${color_1}),  P[c:55%](${color_2}), P[c:74%](${color_2}),  P[c:80%] (${color_3}), P[c:100%](${color_3})",
+                "                       P[c:-6%](${color_4}),  P[c:4%] (${color_5}), P[c:26%](${color_5}),  P[c:32%](${color_1}), P[c:51%](${color_1}),  P[c:57%](${color_2}), P[c:76%](${color_2}),  P[c:82%] (${color_3}), P[c:102%](${color_3})",
+                "                       P[c:-4%](${color_4}),  P[c:6%] (${color_5}), P[c:28%](${color_5}),  P[c:34%](${color_1}), P[c:53%](${color_1}),  P[c:59%](${color_2}), P[c:78%](${color_2}),  P[c:84%] (${color_3}), P[c:104%](${color_3})",
+                "                       P[c:-2%](${color_4}),  P[c:8%] (${color_5}), P[c:30%](${color_5}),  P[c:36%](${color_1}), P[c:55%](${color_1}),  P[c:61%](${color_2}), P[c:80%](${color_2}),  P[c:86%] (${color_3}), P[c:106%](${color_3})",
+                "                       P[c:0%] (${color_4}),  P[c:10%](${color_5}), P[c:32%](${color_5}),  P[c:38%](${color_1}), P[c:57%](${color_1}),  P[c:63%](${color_2}), P[c:82%](${color_2}),  P[c:88%] (${color_3}), P[c:108%](${color_3})",
+                "P[c:-17%](${color_4}), P[c:2%] (${color_4}),  P[c:12%](${color_5}), P[c:34%](${color_5}),  P[c:40%](${color_1}), P[c:59%](${color_1}),  P[c:65%](${color_2}), P[c:84%](${color_2}),  P[c:90%] (${color_3}), P[c:110%](${color_3})",
+                "P[c:-15%](${color_4}), P[c:4%] (${color_4}),  P[c:14%](${color_5}), P[c:36%](${color_5}),  P[c:42%](${color_1}), P[c:61%](${color_1}),  P[c:67%](${color_2}), P[c:86%](${color_2}),  P[c:92%] (${color_3}), P[c:112%](${color_3})",
+                "P[c:-13%](${color_4}), P[c:6%] (${color_4}),  P[c:16%](${color_5}), P[c:38%](${color_5}),  P[c:44%](${color_1}), P[c:63%](${color_1}),  P[c:69%](${color_2}), P[c:88%](${color_2}),  P[c:94%] (${color_3}), P[c:114%](${color_3})",
+                "P[c:-11%](${color_4}), P[c:8%] (${color_4}),  P[c:18%](${color_5}), P[c:40%](${color_5}),  P[c:46%](${color_1}), P[c:65%](${color_1}),  P[c:71%](${color_2}), P[c:90%](${color_2}),  P[c:96%] (${color_3}), P[c:116%](${color_3})",
+                "P[c:-9%] (${color_4}), P[c:10%](${color_4}),  P[c:20%](${color_5}), P[c:42%](${color_5}),  P[c:48%](${color_1}), P[c:67%](${color_1}),  P[c:73%](${color_2}), P[c:92%](${color_2}),  P[c:98%] (${color_3}), P[c:118%](${color_3})",
+                "P[c:-7%] (${color_4}), P[c:12%](${color_4}),  P[c:22%](${color_5}), P[c:44%](${color_5}),  P[c:50%](${color_1}), P[c:69%](${color_1}),  P[c:75%](${color_2}), P[c:94%](${color_2}),  P[c:100%](${color_3})",
+                "P[c:-5%] (${color_4}), P[c:16%](${color_4}),  P[c:24%](${color_5}), P[c:46%](${color_5}),  P[c:52%](${color_1}), P[c:71%](${color_1}),  P[c:77%](${color_2}), P[c:96%](${color_2}),  P[c:102%](${color_3})",
+
+                "                                              P[c:0%] (${color_4}), P[c:22%](${color_4}),  P[c:28%](${color_5}), P[c:47%](${color_5}),  P[c:53%](${color_1}), P[c:72%](${color_1}),  P[c:78%] (${color_2}), P[c:98%] (${color_2}),  P[c:126%] (${color_3})",
+                "                       P[c:-8%](${color_3}),  P[c:2%] (${color_4}), P[c:24%](${color_4}),  P[c:30%](${color_5}), P[c:49%](${color_5}),  P[c:55%](${color_1}), P[c:74%](${color_1}),  P[c:80%] (${color_2}), P[c:100%](${color_2})",
+                "                       P[c:-6%](${color_3}),  P[c:4%] (${color_4}), P[c:26%](${color_4}),  P[c:32%](${color_5}), P[c:51%](${color_5}),  P[c:57%](${color_1}), P[c:76%](${color_1}),  P[c:82%] (${color_2}), P[c:102%](${color_2})",
+                "                       P[c:-4%](${color_3}),  P[c:6%] (${color_4}), P[c:28%](${color_4}),  P[c:34%](${color_5}), P[c:53%](${color_5}),  P[c:59%](${color_1}), P[c:78%](${color_1}),  P[c:84%] (${color_2}), P[c:104%](${color_2})",
+                "                       P[c:-2%](${color_3}),  P[c:8%] (${color_4}), P[c:30%](${color_4}),  P[c:36%](${color_5}), P[c:55%](${color_5}),  P[c:61%](${color_1}), P[c:80%](${color_1}),  P[c:86%] (${color_2}), P[c:106%](${color_2})",
+                "                       P[c:0%] (${color_3}),  P[c:10%](${color_4}), P[c:32%](${color_4}),  P[c:38%](${color_5}), P[c:57%](${color_5}),  P[c:63%](${color_1}), P[c:82%](${color_1}),  P[c:88%] (${color_2}), P[c:108%](${color_2})",
+                "P[c:-17%](${color_3}), P[c:2%] (${color_3}),  P[c:12%](${color_4}), P[c:34%](${color_4}),  P[c:40%](${color_5}), P[c:59%](${color_5}),  P[c:65%](${color_1}), P[c:84%](${color_1}),  P[c:90%] (${color_2}), P[c:110%](${color_2})",
+                "P[c:-15%](${color_3}), P[c:4%] (${color_3}),  P[c:14%](${color_4}), P[c:36%](${color_4}),  P[c:42%](${color_5}), P[c:61%](${color_5}),  P[c:67%](${color_1}), P[c:86%](${color_1}),  P[c:92%] (${color_2}), P[c:112%](${color_2})",
+                "P[c:-13%](${color_3}), P[c:6%] (${color_3}),  P[c:16%](${color_4}), P[c:38%](${color_4}),  P[c:44%](${color_5}), P[c:63%](${color_5}),  P[c:69%](${color_1}), P[c:88%](${color_1}),  P[c:94%] (${color_2}), P[c:114%](${color_2})",
+                "P[c:-11%](${color_3}), P[c:8%] (${color_3}),  P[c:18%](${color_4}), P[c:40%](${color_4}),  P[c:46%](${color_5}), P[c:65%](${color_5}),  P[c:71%](${color_1}), P[c:90%](${color_1}),  P[c:96%] (${color_2}), P[c:116%](${color_2})",
+                "P[c:-9%] (${color_3}), P[c:10%](${color_3}),  P[c:20%](${color_4}), P[c:42%](${color_4}),  P[c:48%](${color_5}), P[c:67%](${color_5}),  P[c:73%](${color_1}), P[c:92%](${color_1}),  P[c:98%] (${color_2}), P[c:118%](${color_2})",
+                "P[c:-7%] (${color_3}), P[c:12%](${color_3}),  P[c:22%](${color_4}), P[c:44%](${color_4}),  P[c:50%](${color_5}), P[c:69%](${color_5}),  P[c:75%](${color_1}), P[c:94%](${color_1}),  P[c:100%](${color_2})",
+                "P[c:-5%] (${color_3}), P[c:16%](${color_3}),  P[c:24%](${color_4}), P[c:46%](${color_4}),  P[c:52%](${color_5}), P[c:71%](${color_5}),  P[c:77%](${color_1}), P[c:96%](${color_1}),  P[c:102%](${color_2})",
+
+                "                                              P[c:0%] (${color_3}), P[c:22%](${color_3}),  P[c:28%](${color_4}), P[c:47%](${color_4}),  P[c:53%](${color_5}), P[c:72%](${color_5}),  P[c:78%] (${color_1}), P[c:98%] (${color_1}),  P[c:126%] (${color_2})",
+                "                       P[c:-8%](${color_2}),  P[c:2%] (${color_3}), P[c:24%](${color_3}),  P[c:30%](${color_4}), P[c:49%](${color_4}),  P[c:55%](${color_5}), P[c:74%](${color_5}),  P[c:80%] (${color_1}), P[c:100%](${color_1})",
+                "                       P[c:-6%](${color_2}),  P[c:4%] (${color_3}), P[c:26%](${color_3}),  P[c:32%](${color_4}), P[c:51%](${color_4}),  P[c:57%](${color_5}), P[c:76%](${color_5}),  P[c:82%] (${color_1}), P[c:102%](${color_1})",
+                "                       P[c:-4%](${color_2}),  P[c:6%] (${color_3}), P[c:28%](${color_3}),  P[c:34%](${color_4}), P[c:53%](${color_4}),  P[c:59%](${color_5}), P[c:78%](${color_5}),  P[c:84%] (${color_1}), P[c:104%](${color_1})",
+                "                       P[c:-2%](${color_2}),  P[c:8%] (${color_3}), P[c:30%](${color_3}),  P[c:36%](${color_4}), P[c:55%](${color_4}),  P[c:61%](${color_5}), P[c:80%](${color_5}),  P[c:86%] (${color_1}), P[c:106%](${color_1})",
+                "                       P[c:0%] (${color_2}),  P[c:10%](${color_3}), P[c:32%](${color_3}),  P[c:38%](${color_4}), P[c:57%](${color_4}),  P[c:63%](${color_5}), P[c:82%](${color_5}),  P[c:88%] (${color_1}), P[c:108%](${color_1})",
+                "P[c:-17%](${color_2}), P[c:2%] (${color_2}),  P[c:12%](${color_3}), P[c:34%](${color_3}),  P[c:40%](${color_4}), P[c:59%](${color_4}),  P[c:65%](${color_5}), P[c:84%](${color_5}),  P[c:90%] (${color_1}), P[c:110%](${color_1})",
+                "P[c:-15%](${color_2}), P[c:4%] (${color_2}),  P[c:14%](${color_3}), P[c:36%](${color_3}),  P[c:42%](${color_4}), P[c:61%](${color_4}),  P[c:67%](${color_5}), P[c:86%](${color_5}),  P[c:92%] (${color_1}), P[c:112%](${color_1})",
+                "P[c:-13%](${color_2}), P[c:6%] (${color_2}),  P[c:16%](${color_3}), P[c:38%](${color_3}),  P[c:44%](${color_4}), P[c:63%](${color_4}),  P[c:69%](${color_5}), P[c:88%](${color_5}),  P[c:94%] (${color_1}), P[c:114%](${color_1})",
+                "P[c:-11%](${color_2}), P[c:8%] (${color_2}),  P[c:18%](${color_3}), P[c:40%](${color_3}),  P[c:46%](${color_4}), P[c:65%](${color_4}),  P[c:71%](${color_5}), P[c:90%](${color_5}),  P[c:96%] (${color_1}), P[c:116%](${color_1})",
+                "P[c:-9%] (${color_2}), P[c:10%](${color_2}),  P[c:20%](${color_3}), P[c:42%](${color_3}),  P[c:48%](${color_4}), P[c:67%](${color_4}),  P[c:73%](${color_5}), P[c:92%](${color_5}),  P[c:98%] (${color_1}), P[c:118%](${color_1})",
+                "P[c:-7%] (${color_2}), P[c:12%](${color_2}),  P[c:22%](${color_3}), P[c:44%](${color_3}),  P[c:50%](${color_4}), P[c:69%](${color_4}),  P[c:75%](${color_5}), P[c:94%](${color_5}),  P[c:100%](${color_1})",
+                "P[c:-5%] (${color_2}), P[c:16%](${color_2}),  P[c:24%](${color_3}), P[c:46%](${color_3}),  P[c:52%](${color_4}), P[c:71%](${color_4}),  P[c:77%](${color_5}), P[c:96%](${color_5}),  P[c:102%](${color_1})",
+
+                "                                              P[c:0%] (${color_2}), P[c:22%](${color_2}),  P[c:28%](${color_3}), P[c:47%](${color_3}),  P[c:53%](${color_4}), P[c:72%](${color_4}),  P[c:78%] (${color_5}), P[c:98%] (${color_5}),  P[c:126%] (${color_1})",
+                "                       P[c:-8%](${color_1}),  P[c:2%] (${color_2}), P[c:24%](${color_2}),  P[c:30%](${color_3}), P[c:49%](${color_3}),  P[c:55%](${color_4}), P[c:74%](${color_4}),  P[c:80%] (${color_5}), P[c:100%](${color_5})",
+                "                       P[c:-6%](${color_1}),  P[c:4%] (${color_2}), P[c:26%](${color_2}),  P[c:32%](${color_3}), P[c:51%](${color_3}),  P[c:57%](${color_4}), P[c:76%](${color_4}),  P[c:82%] (${color_5}), P[c:102%](${color_5})",
+                "                       P[c:-4%](${color_1}),  P[c:6%] (${color_2}), P[c:28%](${color_2}),  P[c:34%](${color_3}), P[c:53%](${color_3}),  P[c:59%](${color_4}), P[c:78%](${color_4}),  P[c:84%] (${color_5}), P[c:104%](${color_5})",
+                "                       P[c:-2%](${color_1}),  P[c:8%] (${color_2}), P[c:30%](${color_2}),  P[c:36%](${color_3}), P[c:55%](${color_3}),  P[c:61%](${color_4}), P[c:80%](${color_4}),  P[c:86%] (${color_5}), P[c:106%](${color_5})",
+                "                       P[c:0%] (${color_1}),  P[c:10%](${color_2}), P[c:32%](${color_2}),  P[c:38%](${color_3}), P[c:57%](${color_3}),  P[c:63%](${color_4}), P[c:82%](${color_4}),  P[c:88%] (${color_5}), P[c:108%](${color_5})",
+                "P[c:-17%](${color_1}), P[c:2%] (${color_1}),  P[c:12%](${color_2}), P[c:34%](${color_2}),  P[c:40%](${color_3}), P[c:59%](${color_3}),  P[c:65%](${color_4}), P[c:84%](${color_4}),  P[c:90%] (${color_5}), P[c:110%](${color_5})",
+                "P[c:-15%](${color_1}), P[c:4%] (${color_1}),  P[c:14%](${color_2}), P[c:36%](${color_2}),  P[c:42%](${color_3}), P[c:61%](${color_3}),  P[c:67%](${color_4}), P[c:86%](${color_4}),  P[c:92%] (${color_5}), P[c:112%](${color_5})",
+                "P[c:-13%](${color_1}), P[c:6%] (${color_1}),  P[c:16%](${color_2}), P[c:38%](${color_2}),  P[c:44%](${color_3}), P[c:63%](${color_3}),  P[c:69%](${color_4}), P[c:88%](${color_4}),  P[c:94%] (${color_5}), P[c:114%](${color_5})",
+                "P[c:-11%](${color_1}), P[c:8%] (${color_1}),  P[c:18%](${color_2}), P[c:40%](${color_2}),  P[c:46%](${color_3}), P[c:65%](${color_3}),  P[c:71%](${color_4}), P[c:90%](${color_4}),  P[c:96%] (${color_5}), P[c:116%](${color_5})",
+                "P[c:-9%] (${color_1}), P[c:10%](${color_1}),  P[c:20%](${color_2}), P[c:42%](${color_2}),  P[c:48%](${color_3}), P[c:67%](${color_3}),  P[c:73%](${color_4}), P[c:92%](${color_4}),  P[c:98%] (${color_5}), P[c:118%](${color_5})",
+                "P[c:-7%] (${color_1}), P[c:12%](${color_1}),  P[c:22%](${color_2}), P[c:44%](${color_2}),  P[c:50%](${color_3}), P[c:69%](${color_3}),  P[c:75%](${color_4}), P[c:94%](${color_4}),  P[c:100%](${color_5})",
+                "P[c:-5%] (${color_1}), P[c:16%](${color_1}),  P[c:24%](${color_2}), P[c:46%](${color_2}),  P[c:52%](${color_3}), P[c:71%](${color_3}),  P[c:77%](${color_4}), P[c:96%](${color_4}),  P[c:102%](${color_5})"
             ],
             "custom-kll": ""
         },

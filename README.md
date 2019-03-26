@@ -35,5 +35,5 @@ Getting a shell
 # Adding build container
 
 - Edit docker-compose.yml
+- Edit config.db
 - docker-compose build
-- Edit src/main.rs
