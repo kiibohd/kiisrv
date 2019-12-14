@@ -28,10 +28,18 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
     let build_script = match name.to_lowercase().as_ref() {
         "md1" => "infinity.bash",
         "md1.1" => "infinity_led.bash",
+        "infinity" => "infinity.bash",
+        "icpad" => "icpad.bash",
         "mdergo1" => "ergodox.bash",
+        "ergodox" => "ergodox.bash",
         "whitefox" => "whitefox.bash",
         "ktype" => "k-type.bash",
+        "k-type" => "k-type.bash",
         "kira" => "kira.bash",
+        "gemini" => "geminiduskdawn.bash",
+        "geminidusk" => "geminiduskdawn.bash",
+        "geminidawn" => "geminiduskdawn.bash",
+        "geminiduskdawn" => "geminiduskdawn.bash",
         _ => panic!("Unknown keyboard {}", name),
     }
     .to_string();
@@ -107,13 +115,13 @@ pub fn start_build(
         args.push("SPLIT_KEYBOARD=1".to_string());
     }
 
-    args.extend_from_slice(&[container, config.build_script, kll_dir, output_file]);
+    args.extend_from_slice(&[container.clone(), config.build_script, kll_dir, output_file]);
 
     let mut compile = Command::new("docker-compose");
     compile.args(&args);
     let process = SharedChild::spawn(&mut compile).expect("Failed to execute!");
 
-    println!(" >> Created PID: {}", process.id());
+    println!(" >> Created PID: {} ({})", process.id(), container);
     return process;
 }
 

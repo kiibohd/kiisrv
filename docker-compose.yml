@@ -48,6 +48,13 @@ services:
       args:
         - TAG=v0.5.5
 
+  controller-056:
+    << : *controller-template
+    build:
+      << : *build-defaults
+      args:
+        - TAG=v0.5.6
+
 secrets:
   github_apikey:
     file: ./apikey

@@ -139,6 +139,16 @@ pub fn kll_list(layers: Vec<String>) -> String {
     layers.join(";")
 }
 
+pub fn format_key(s: &str) -> String {
+    if s.starts_with("CONS:") {
+        return format!("CONS\"{}\"", crop_str(s, 5));
+    } else if s.starts_with("SYS:") {
+        return format!("SYS\"{}\"", crop_str(s, 4));
+    } else {
+        return format!("U\"{}\"", s);
+    }
+}
+
 pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
     let header = config.header.clone();
     let name = &header.name.replace(" ", "_"); //sanitize
@@ -299,6 +309,7 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
             .iter()
             .map(|(k, v)| {
                 let mut comment_out = false;
+                let k = format_key(k);
                 let mut s = v.to_string();
                 if v.starts_with("#:") {
                     if is_lts && v.contains("ledControl") {
@@ -320,18 +331,14 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
                     } else {
                         s = crop_str(v, 2).to_string();
                     }
-                } else if v.starts_with("CONS:") {
-                    s = format!("CONS\"{}\"", crop_str(v, 5));
-                } else if v.starts_with("SYS:") {
-                    s = format!("SYS\"{}\"", crop_str(v, 4));
                 } else {
-                    s = format!("U\"{}\"", v);
+                    s = format_key(v);
                 }
 
                 if comment_out {
-                    format!("#U\"{}\" : {};", k, s)
+                    format!("#{} : {};", k, s)
                 } else {
-                    format!("U\"{}\" : {};", k, s)
+                    format!("{} : {};", k, s)
                 }
             })
             .collect::<Vec<_>>()
@@ -342,8 +349,9 @@ pub fn generate_kll(config: &KllConfig, is_lts: bool) -> Vec<KllFile> {
             triggers_out = triggers
                 .iter()
                 .map(|(k, v)| {
+                    let k = format_key(k);
                     v.iter()
-                        .map(|t| format!("U\"{}\" :+ {};", k, t.action))
+                        .map(|t| format!("{} :+ {};", k, t.action))
                         .collect::<Vec<_>>()
                         .join("\n")
                 })

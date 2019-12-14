@@ -103,7 +103,8 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         let config = body.config;
         let container = match body.env.as_ref() {
             "lts" => "controller-050",
-            "latest" | _ => "controller-054",
+            "nightly" => "controller-056",
+            "latest" | _ => "controller-056",
         }
         .to_string();
 
@@ -122,7 +123,11 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
         let job: JobEntry = {
             let mutex = req.get::<Write<JobQueue>>().expect("Could not find mutex");
-            let mut queue = mutex.lock().expect("Could not lock mutex"); // *** Panics if poisoned **
+            let queue = mutex.lock(); //.expect("Could not lock mutex"); // *** Panics if poisoned **
+            if let Err(e) = queue {
+                std::process::exit(1);
+            }
+            let mut queue = queue.unwrap();
 
             if let Some(job) = (*queue).get(&hash) {
                 println!(" > Existing task");
