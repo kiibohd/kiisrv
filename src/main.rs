@@ -121,17 +121,23 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         };
         println!("Received request: {}", hash);
 
+        let info = configure_build(&config, vec!["".to_string()]);
+        let mut output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
+        let file_exists = Path::new(&output_file).exists();
+
         let job: JobEntry = {
             let mutex = req.get::<Write<JobQueue>>().expect("Could not find mutex");
             let queue = mutex.lock(); //.expect("Could not lock mutex"); // *** Panics if poisoned **
             if let Err(e) = queue {
+                eprintln!("{:?}", e);
                 std::process::exit(1);
             }
             let mut queue = queue.unwrap();
+            let job = (*queue).get(&hash);
 
-            if let Some(job) = (*queue).get(&hash) {
+            if file_exists && job.is_some() {
                 println!(" > Existing task");
-                job.clone()
+                job.unwrap().clone()
             } else {
                 println!(" > Starting new build");
 
@@ -161,9 +167,6 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
             // drop lock
         };
-
-        let info = configure_build(&config, vec!["".to_string()]);
-        let mut output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
 
         let (success, duration) = match job {
             JobEntry::Building(arc) => {
@@ -249,13 +252,10 @@ fn versions_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
 fn version_map() -> HashMap<String, String> {
     let mut versions: HashMap<String, String> = HashMap::new();
-    versions.insert("latest".to_string(), "controller-053".to_string());
+    versions.insert("latest".to_string(), "controller-056".to_string());
     versions.insert("lts".to_string(), "controller-050".to_string());
-    versions.insert("v.0.5.3".to_string(), "controller-053".to_string());
-    versions.insert("v.0.5.2".to_string(), "controller-052".to_string());
-    versions.insert("v.0.5.1".to_string(), "controller-051".to_string());
-    versions.insert("v.0.5.0".to_string(), "controller-050".to_string());
-    versions.insert("0.4.9".to_string(), "controller-049".to_string());
+    versions.insert("v0.5.6".to_string(), "controller-056".to_string());
+    versions.insert("v0.5.0".to_string(), "controller-050".to_string());
 
     let containers = list_containers();
     versions

@@ -4,7 +4,8 @@ x-controller:
   &controller-template
   tmpfs: /tmp
   environment:
-    - CCACHE_DIR="/mnt/ccache"
+    - CCACHE_DIR=/mnt/ccache
+    - CCACHE_CONFIGPATH=/mnt/ccache/ccache.conf
   secrets:
     - github_apikey
   volumes:

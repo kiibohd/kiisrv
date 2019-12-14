@@ -7,3 +7,5 @@ CACHE_MOUNT="/kll_cache"
 mkdir -p "${CACHE_MOUNT}"
 rm -rf "${CACHE_MOUNT}/${CACHE_NAME}"
 mv "${CACHE_PATH}" "${CACHE_MOUNT}"
+
+echo "max_size = 5.0G" > /mnt/ccache/ccache.conf
