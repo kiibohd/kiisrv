@@ -115,7 +115,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
         let hash = {
             let mut hasher = DefaultHasher::new();
             container.hash(&mut hasher);
-            //body.hash(&mut hasher);
+            config_str.hash(&mut hasher);
             let h = hasher.finish();
             format!("{:x}", h)
         };
@@ -123,7 +123,8 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
 
         let info = configure_build(&config, vec!["".to_string()]);
         let mut output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
-        let file_exists = Path::new(&output_file).exists();
+        //let file_exists = Path::new(&output_file).exists();
+        //println!("Zip exists: {:?} ({})", file_exists, output_file)
 
         let job: JobEntry = {
             let mutex = req.get::<Write<JobQueue>>().expect("Could not find mutex");
@@ -135,7 +136,8 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
             let mut queue = queue.unwrap();
             let job = (*queue).get(&hash);
 
-            if file_exists && job.is_some() {
+            //if file_exists && job.is_some() {
+            if job.is_some() {
                 println!(" > Existing task");
                 job.unwrap().clone()
             } else {
