@@ -91,10 +91,6 @@ pub fn start_build(
     kll_dir: String,
     output_file: String,
 ) -> SharedChild {
-    /*let mut sleep = Command::new("sleep");
-    sleep.args(&["10"]);
-    let process = SharedChild::spawn(&mut sleep).expect("Failed to execute!");*/
-
     let mut args = vec![
         "run".to_string(),
         "--rm".to_string(),
@@ -119,7 +115,7 @@ pub fn start_build(
 
     let mut compile = Command::new("docker-compose");
     compile.args(&args);
-    let process = SharedChild::spawn(&mut compile).expect("Failed to execute!");
+    let process = SharedChild::spawn(&mut compile).expect("docker-compose failed to run container");
 
     println!(" >> Created PID: {} ({})", process.id(), container);
     return process;
@@ -129,7 +125,7 @@ pub fn list_containers() -> Vec<String> {
     let result = Command::new("docker-compose")
         .args(&["config", "--services"])
         .output()
-        .expect("Failed!");
+        .expect("Please install docker-compose");
     let out = String::from_utf8_lossy(&result.stdout);
     out.lines()
         .filter(|s| !s.contains("template"))
@@ -150,7 +146,7 @@ pub fn get_builds(service: &str) -> String {
             "%P\n",
         ])
         .output()
-        .expect("Failed!");
+        .expect("docker-compose failed!");
     String::from_utf8_lossy(&result.stdout).to_string()
 }
 
@@ -170,7 +166,7 @@ fn old_builds(service: &str) {
             "-print",
         ])
         .status()
-        .expect("Failed!");
+        .expect("docker-compose failed!");
 
     if status.success() {
         println!("Success!");

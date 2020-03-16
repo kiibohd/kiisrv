@@ -1,8 +1,10 @@
 mod build;
 mod kll;
+mod versions;
 
 use crate::build::*;
 use crate::kll::*;
+use crate::versions::version_map;
 
 use std::collections::hash_map::{DefaultHasher, HashMap};
 use std::fs;
@@ -252,20 +254,6 @@ fn versions_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
     )))
 }
 
-fn version_map() -> HashMap<String, String> {
-    let mut versions: HashMap<String, String> = HashMap::new();
-    versions.insert("latest".to_string(), "controller-056".to_string());
-    versions.insert("lts".to_string(), "controller-050".to_string());
-    versions.insert("v0.5.6".to_string(), "controller-056".to_string());
-    versions.insert("v0.5.0".to_string(), "controller-050".to_string());
-
-    let containers = list_containers();
-    versions
-        .into_iter()
-        .filter(|(_, v)| containers.contains(&v))
-        .collect()
-}
-
 fn main() {
     pretty_env_logger::init();
 
@@ -291,8 +279,16 @@ fn main() {
     old_builds("controller-050");
     println!("");*/
 
-    let versions = version_map();
-    println!("\nVersions:");
+    let containers = list_containers();
+    println!("\nPossible containers:");
+    println!("{:#?}", containers);
+
+    let versions: HashMap<String, String> = version_map()
+        .into_iter()
+        .filter(|(_, v)| containers.contains(&v))
+        .collect();
+
+    println!("\nActive versions:");
     println!("{:#?}", versions);
 
     let (logger_before, logger_after) = Logger::new(None);
