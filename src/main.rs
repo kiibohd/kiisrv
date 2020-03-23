@@ -31,7 +31,6 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use shared_child::SharedChild;
 
-const API_HOST: &str = "0.0.0.0:3001";
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
 const BUILD_ROUTE: &str = "./tmp";
 
@@ -303,12 +302,20 @@ fn main() {
     mount.mount("/versions", versions_request);
     mount.mount("/", build_request);
 
-    println!("\nBuild dispatcher starting.\nListening on {}", API_HOST);
+    let host = std::env::var("KIISRV_HOST");
+    let host = host.as_ref().map_or("0.0.0.0", String::as_str);
+
+    let port = std::env::var("KIISRV_PORT");
+    let port = port.as_ref().map_or("3001", String::as_str);
+
+    let api_host: &str = &format!("{}:{}", host, port);
+    println!("\nBuild dispatcher starting.\nListening on {}", api_host);
+
     let mut chain = Chain::new(mount);
     chain.link_before(Write::<JobQueue>::one(queue));
     chain.link_before(Read::<VersionsMap>::one(versions));
     chain.link_before(Read::<bodyparser::MaxBodyLength>::one(MAX_BODY_LENGTH));
     chain.link_before(logger_before);
     chain.link_after(logger_after);
-    Iron::new(chain).http(API_HOST).unwrap();
+    Iron::new(chain).http(api_host).unwrap();
 }
