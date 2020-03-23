@@ -78,8 +78,13 @@ if [ "${SPLIT_KEYBOARD}" == "1" ]; then
 	build "${BuildScript%.*}-r.bash" "${RBuildPath}" &
 	PID_RIGHT=$!
 
-	wait $PID_LEFT $PID_RIGHT
+	wait $PID_LEFT
 	RETVAL=$?
+	wait $PID_RIGHT
+	RETVAL2=$?
+	if [ ${RETVAL} -eq 0 ]; then
+		RETVAL=${RETVAL2}
+	fi
 
 	ln -s ${LBuildPath}/kiibohd.dfu.bin ${BUILD_DIR}/left_kiibohd.dfu.bin
 	ln -s ${LBuildPath}/kiibohd.secure.dfu.bin ${BUILD_DIR}/left_kiibohd.secure.dfu.bin
