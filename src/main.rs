@@ -102,10 +102,12 @@ fn get_layout(req: &mut Request<'_, '_>) -> IronResult<Response> {
 fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
     if let Ok(Some(body)) = req.get::<bodyparser::Struct<BuildRequest>>() {
         let config = body.config;
+	//let versions = req.get::<Read<VersionsMap>>().unwrap();
+        //let container = versions.get(body.env).unwrap_or("controller-050");
         let container = match body.env.as_ref() {
             "lts" => "controller-050",
-            "nightly" => "controller-056",
-            "latest" | _ => "controller-056",
+            "nightly" => "controller-057",
+            "latest" | _ => "controller-057",
         }
         .to_string();
 
