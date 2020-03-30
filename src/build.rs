@@ -3,6 +3,8 @@ use crate::kll::KllConfig;
 use crate::kll::*;
 use shared_child::SharedChild;
 use std::process::Command;
+use std::path::Path;
+use std::ffi::OsStr;
 
 #[derive(Debug)]
 pub struct BuildInfo {
@@ -51,25 +53,28 @@ pub fn configure_build(config: &KllConfig, layers: Vec<String>) -> BuildInfo {
 
     let extra_map = match name.to_lowercase().as_ref() {
         "mdergo1" => vec![
-            "stdFuncMap".to_string(),
             "infinity_ergodox/lcdFuncMap".to_string(),
         ],
         _ => vec!["stdFuncMap".to_string()],
     };
 
     let mut layers = layers.iter();
-    let base_layer = kll_filename(layers.next().unwrap());
+    let base_layer_kll = kll_filename(layers.next().unwrap().to_string());
+    let base_layer = Path::new(&base_layer_kll).file_stem().unwrap_or(OsStr::new("")).to_os_string();
 
     let default_map = {
+        // TODO (HaaTa): extra_map is likely not necessary anymore
         let mut layer = extra_map.clone();
-        layer.push(base_layer.to_string());
+        layer.push(base_layer.into_string().unwrap());
         layer
     };
 
     let partial_maps = layers
         .map(|l| {
-            let mut layer = extra_map.clone();
-            layer.push(l.to_string());
+            //let mut layer = extra_map.clone();
+            let mut layer = vec![];
+            let partial_layer = Path::new(&l).file_stem().unwrap_or(OsStr::new("")).to_os_string();
+            layer.push(partial_layer.into_string().unwrap());
             kll_layer(layer)
         })
         .collect::<Vec<_>>();

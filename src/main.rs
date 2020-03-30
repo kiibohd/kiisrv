@@ -244,7 +244,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                 println!(" > Existing task");
                 job.unwrap().clone()
             } else {
-                println!(" > Starting new build");
+                println!(" > Starting new build in container {}", container);
 
                 let config_dir = format!("{}/{}", CONFIG_DIR, hash);
                 fs::create_dir_all(&config_dir).expect("Could not create directory");
@@ -257,6 +257,7 @@ fn build_request(req: &mut Request<'_, '_>) -> IronResult<Response> {
                     layers.push(format!("{}", filename));
                 }
 
+		println!("{:?}", layers);
                 let info = configure_build(&config, layers);
                 let output_file = format!("{}-{}-{}.zip", info.name, info.layout, hash);
                 println!("{:?}", info);

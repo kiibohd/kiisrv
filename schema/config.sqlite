@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS `Versions` (
 	`git_tag`        TEXT
 );
 
-INSERT INTO `Versions` VALUES ("nightly",     "beta",   "controller-055b",  "v0.5.7");
-INSERT INTO `Versions` VALUES ("latest",      "stable", "controller-053",   "v0.5.7");
+INSERT INTO `Versions` VALUES ("nightly",     "beta",   "controller-057",  "v0.5.7");
+INSERT INTO `Versions` VALUES ("latest",      "stable", "controller-057",   "v0.5.7");
 INSERT INTO `Versions` VALUES ("lts",         "lts",    "controller-050",   "v0.5.0");
 
 INSERT INTO `Versions` VALUES ("v0.5.7",      "beta",   "controller-057",   "v0.5.7");

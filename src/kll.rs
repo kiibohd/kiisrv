@@ -2,7 +2,7 @@ use indexmap::IndexMap;
 use serde_derive::{Deserialize, Serialize};
 use std::ffi::OsStr;
 use std::fs;
-use std::path::Path;
+use std::path::PathBuf;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Animation {
@@ -122,15 +122,16 @@ fn crop_str(s: &str, pos: usize) -> &str {
     }
 }
 
-pub fn kll_filename(filename: &str) -> &str {
-    let basename = Path::new(filename).file_stem().unwrap_or(OsStr::new(""));
-    basename.to_str().unwrap_or("")
+pub fn kll_filename(filename: String) -> String {
+    let mut path = PathBuf::from(filename);
+    path.set_extension(""); // Remove .kll extension
+    path.into_os_string().into_string().unwrap_or("".to_string())
 }
 
 pub fn kll_layer(filenames: Vec<String>) -> String {
     filenames
         .iter()
-        .map(|f| kll_filename(f))
+        .map(|f| kll_filename(f.to_string()))
         .collect::<Vec<_>>()
         .join(" ")
 }
